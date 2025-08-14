@@ -1,21 +1,25 @@
-commands: {}
+executors:
+    bullseye:
+        docker:
+            - image: node:22.15.1-bullseye-slim
+        environment:
+            PLATFORM: linux
+        resource_class: small
 jobs:
     lint:
-        docker:
-            - image: cimg/node:current
+        executor: bullseye
         steps:
             - checkout
-            - install-yarn: true
-              node-version: 22.15.1
-              node/install: null
+            - node/install-packages:
+                pkg-manager: yarn
+                with-cache: true
             - run: yarn build
 orbs:
-    circleci: circleci/circleci@1.0.0
+    node: circleci/node@7.1.1
 setup: true
 version: 2.1
 workflows:
     pull-request:
-        pull-request:
-            jobs:
-                - lint
+        jobs:
+            - lint
 

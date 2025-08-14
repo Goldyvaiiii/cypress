@@ -1,0 +1,8 @@
+lint:
+  executor: bullseye
+  steps:
+    - checkout
+    - node/install-packages:
+        pkg-manager: yarn
+        with-cache: true
+    - run: yarn build
