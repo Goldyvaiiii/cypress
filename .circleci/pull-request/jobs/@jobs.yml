@@ -1,7 +1,9 @@
 lint:
   executor: bullseye
   steps:
-    - checkout
+    - checkout:
+        path: .
+        depth: 1
     - node/install-packages:
         pkg-manager: yarn
         with-cache: true
