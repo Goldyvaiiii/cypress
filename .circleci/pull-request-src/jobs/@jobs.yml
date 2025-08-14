@@ -1,0 +1,10 @@
+lint:
+  docker:
+    - image: cimg/node:current
+  steps:
+    - checkout
+    - node/install:
+      install-yarn: true
+      node-version: 22.15.1
+    - run: yarn build
+      

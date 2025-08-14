@@ -1,0 +1,21 @@
+commands: {}
+jobs:
+    lint:
+        docker:
+            - image: cimg/node:current
+        steps:
+            - checkout
+            - install-yarn: true
+              node-version: 22.15.1
+              node/install: null
+            - run: yarn build
+orbs:
+    circleci: circleci/circleci@1.0.0
+setup: true
+version: 2.1
+workflows:
+    pull-request:
+        pull-request:
+            jobs:
+                - lint
+
