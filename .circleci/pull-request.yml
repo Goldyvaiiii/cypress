@@ -4,7 +4,7 @@ executors:
             - image: node:22.15.1-bullseye-slim
         environment:
             PLATFORM: linux
-        resource_class: small
+        resource_class: medium
 jobs:
     lint:
         executor: bullseye
