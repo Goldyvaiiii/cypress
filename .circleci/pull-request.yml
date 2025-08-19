@@ -1,27 +1,59 @@
-executors:
-    bullseye:
-        docker:
-            - image: node:22.15.1-bullseye-slim
-        environment:
-            PLATFORM: linux
-        resource_class: medium
-jobs:
-    lint:
-        executor: bullseye
-        steps:
-            - checkout:
-                depth: 1
-                path: .
-            - node/install-packages:
-                pkg-manager: yarn
-                with-cache: true
-            - run: yarn build
-orbs:
-    node: circleci/node@7.1.1
-setup: true
 version: 2.1
-workflows:
-    pull-request:
-        jobs:
-            - lint
 
+orbs:
+  node: circleci/node@7.1.1
+
+executors:
+  bullseye:
+    docker:
+      - image: node:22.15.1-bullseye-slim
+    environment:
+      PLATFORM: linux
+    resource_class: medium
+
+commands:
+  prepare-environment:
+    steps:
+      - checkout:
+          path: .
+          depth: 1
+      - node/install-packages:
+          pkg-manager: yarn
+          with-cache: true
+      - run: yarn build
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - cypress
+
+  use-prepared-env:
+    steps:
+      - checkout:
+          path: .
+          depth: 1
+      - node/install-packages:
+          pkg-manager: yarn
+          with-cache: true
+      - attach_workspace:
+          at: ~/
+
+jobs:
+  build:
+    executor: bullseye
+    steps:
+      - prepare-environment
+  lint:
+    executor: bullseye
+    steps:
+      - use-prepared-env
+      - run:
+          name: Lint
+          command: |
+            lerna run lint
+
+workflows:
+  pull-request:
+    jobs:
+      - build
+      - lint
+        requires: build
