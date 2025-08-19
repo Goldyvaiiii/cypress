@@ -1,4 +1,4 @@
-FROM node:22.15.2-bullseye-slim
+FROM node:22-bullseye-slim
 
 RUN apt-get update && \
   apt-get install --no-install-recommends -y \

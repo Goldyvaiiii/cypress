@@ -18,7 +18,7 @@ executors:
 
   linux-x64:
     docker:
-      - image: node:22.15.1-bullseye-slim
+      - image: node:22-bullseye-slim
     environment:
       PLATFORM: linux
     resource_class: small
@@ -28,7 +28,7 @@ commands:
     steps:
       - checkout:
           path: .
-          depth: 1
+          depth: 0
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
