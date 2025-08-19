@@ -5,24 +5,23 @@ orbs:
 
 executors:
   build-docker-image:
-    machine:
-      image: bullseye-slim
-      docker_layer_caching: true
-    resource_class: medium
+    docker:
+      - image: bullseye-slim
+    resource_class: small
 
   cypress-build-internal:
     docker:
       - image: cypress/build-internal
     environment:
       PLATFORM: linux
-    resource_class: medium
+    resource_class: small
 
-  medium-linux-x64:
+  linux-x64:
     docker:
       - image: node:22.15.1-bullseye-slim
     environment:
       PLATFORM: linux
-    resource_class: medium
+    resource_class: small
 
 commands:
   prepare-environment:
@@ -48,7 +47,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-         docker_layer_caching: true
+          docker_layer_caching: true
       - run:
           name: Create Build Environment
           command: docker build -t cypress/build-internal ./.circleci/Dockerfile
@@ -58,7 +57,7 @@ jobs:
     steps:
       - prepare-environment
   lint:
-    executor: medium-linux-x64
+    executor: linux-x64
     steps:
       - use-prepared-env
       - run:
