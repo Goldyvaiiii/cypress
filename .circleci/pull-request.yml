@@ -20,22 +20,17 @@ commands:
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
+          node-version: "22.15.1"
       - run: yarn build
       - persist_to_workspace:
-          root: ~/
+          root: .
           paths:
             - cypress
 
   use-prepared-env:
     steps:
-      - checkout:
-          path: .
-          depth: 1
-      - node/install-packages:
-          pkg-manager: yarn
-          with-cache: true
       - attach_workspace:
-          at: ~/
+          at: .
 
 jobs:
   build:
