@@ -4,12 +4,9 @@ orbs:
   node: circleci/node@7.1.1
 
 executors:
-
-
-
   linux-x64:
     docker:
-      - image: cypress/base-internal
+      - image: cypress/base-internal:22.15.1
     environment:
       PLATFORM: linux
     resource_class: small
