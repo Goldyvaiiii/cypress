@@ -15,10 +15,13 @@ commands:
   prepare-environment:
     steps:
       - checkout
+      - run: |
+          yarn config set cache-folder .yarn-cache
+          yarn config set prefer-offline true
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
-          override-ci-command: "yarn install --frozen-lockfile --prefer-offline"
+          cache-path: .yarn-cache
       - run: yarn build
       - persist_to_workspace:
           root: .
