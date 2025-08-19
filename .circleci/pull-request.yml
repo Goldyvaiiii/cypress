@@ -18,7 +18,7 @@ commands:
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
-          override-ci-command: yarn install --frozen-lockfile --prefer-offline
+          override-ci-command: "yarn install --frozen-lockfile --prefer-offline"
       - run: yarn build
       - persist_to_workspace:
           root: .
