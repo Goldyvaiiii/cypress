@@ -6,7 +6,7 @@ orbs:
 executors:
   linux-x64:
     docker:
-      - image: cypress/base-internal:22.15.1
+      - image: cypress/base-internal:22.15.1-bullseye
     environment:
       PLATFORM: linux
     resource_class: small
@@ -14,9 +14,7 @@ executors:
 commands:
   prepare-environment:
     steps:
-      - checkout:
-          path: .
-          depth: 0
+      - checkout
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
