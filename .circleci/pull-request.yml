@@ -26,15 +26,16 @@ executors:
 commands:
   prepare-environment:
     steps:
-      - checkout
+      - checkout:
+          path: .
+          depth: 1
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
       - run: yarn build
       - persist_to_workspace:
           root: .
-          paths:
-            - cypress
+          paths: cypress
 
   use-prepared-env:
     steps:
@@ -50,8 +51,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Create Build Environment
-          command: docker build -t cypress/build-internal ./.circleci/Dockerfile
-
+          command: docker build -t cypress/build-internal -f .circleci/Dockerfile .
   build:
     executor: cypress-build-internal
     steps:
