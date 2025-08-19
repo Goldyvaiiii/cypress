@@ -14,9 +14,10 @@ executors:
 commands:
   prepare-environment:
     steps:
-      - checkout:
-          path: .
-          depth: 1
+      - run:
+          name: Checkout
+          command: |
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
