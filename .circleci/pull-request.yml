@@ -6,7 +6,7 @@ orbs:
 executors:
   build-docker-image:
     docker:
-      - image: bullseye-slim
+      - image: debian:bullseye-slim
     resource_class: small
 
   cypress-build-internal:
