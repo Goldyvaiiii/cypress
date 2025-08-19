@@ -4,21 +4,12 @@ orbs:
   node: circleci/node@7.1.1
 
 executors:
-  build-docker-image:
-    docker:
-      - image: cimg/base:2025.06
-    resource_class: small
 
-  cypress-build-internal:
-    docker:
-      - image: cypress/build-internal
-    environment:
-      PLATFORM: linux
-    resource_class: small
+
 
   linux-x64:
     docker:
-      - image: node:22-bullseye-slim
+      - image: cypress/base-internal
     environment:
       PLATFORM: linux
     resource_class: small
@@ -43,17 +34,8 @@ commands:
           at: .
 
 jobs:
-  build-image:
-    executor: build-docker-image
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Create Build Environment
-          command: docker build -t cypress/build-internal -f .circleci/Dockerfile .
   build:
-    executor: cypress-build-internal
+    executor: linux-x64
     steps:
       - prepare-environment
   lint:
@@ -68,10 +50,7 @@ jobs:
 workflows:
   pull-request:
     jobs:
-      - build-image
-      - build:
-          requires:
-            - build-image
+      - build
       - lint:
           requires:
             - build
