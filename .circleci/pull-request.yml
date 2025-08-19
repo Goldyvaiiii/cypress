@@ -20,10 +20,7 @@ executors:
 commands:
   prepare-environment:
     steps:
-      - run:
-          name: Checkout
-          command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - checkout
       - run:
           name: Create Build Environment
           command: docker build -t cypress/build-internal ./.circleci/Dockerfile
