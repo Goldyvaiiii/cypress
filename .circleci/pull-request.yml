@@ -20,7 +20,6 @@ commands:
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
-          node-version: "22.15.1"
       - run: yarn build
       - persist_to_workspace:
           root: .
@@ -50,5 +49,6 @@ workflows:
   pull-request:
     jobs:
       - build
-      - lint
-        requires: build
+      - lint:
+          requires:
+            - build
