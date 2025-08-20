@@ -17,7 +17,7 @@ commands:
       - run: |
           yarn patch-package
           yarn gulp syncCloudValidations
-          yarn nx run-many --target=build --all --exclude=root
+          yarn nx run-many --target=build --all --exclude=root --verbose
   prepare-environment:
     steps:
       - checkout
@@ -38,8 +38,6 @@ commands:
             - tooling
             - system-tests
             - cli
-
-
   use-prepared-env:
     steps:
       - attach_workspace:
@@ -59,7 +57,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            lerna run lint
+            yarn nx run-many --target=lint --all
 
 workflows:
   pull-request:
