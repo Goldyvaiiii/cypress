@@ -12,6 +12,11 @@ executors:
     resource_class: small
 
 commands:
+  build-repo:
+    steps:
+      - run: |
+          patch-package
+          yarn nx run-many --target=build --all --exclude=root
   prepare-environment:
     steps:
       - checkout
@@ -22,7 +27,7 @@ commands:
           pkg-manager: yarn
           with-cache: true
           cache-path: .yarn-cache
-      - run: yarn nx run-many --target=build --all --exclude=root
+      - build-repo
       - persist_to_workspace:
           root: .
           paths:
@@ -42,6 +47,8 @@ commands:
 jobs:
   build:
     executor: linux-x64
+    environment:
+      - SKIP_POST_INSTALL: true
     steps:
       - prepare-environment
   lint:

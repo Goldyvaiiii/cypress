@@ -1,5 +1,10 @@
 const { execSync } = require('child_process')
 
+if (process.env.SKIP_POST_INSTALL) {
+  console.log('Skipping post-install script due to SKIP_POST_INSTALL environment variable')
+  process.exit(0)
+}
+
 const executionEnv = process.env.CI ? 'ci' : 'local'
 
 const postInstallCommands = {
