@@ -14,10 +14,13 @@ executors:
 commands:
   build-repo:
     steps:
-      - run: |
-          yarn patch-package
-          yarn gulp syncCloudValidations
-          yarn nx run-many --target=build --all --exclude=root
+      - run:
+          name: Patch and Build
+          command: |
+            yarn patch-package
+            yarn gulp syncCloudValidations
+            yarn nx run-many --target=build --all --exclude=root
+            yarn nx run @packages/electron:build-binary
   prepare-environment:
     steps:
       - checkout
@@ -32,12 +35,7 @@ commands:
       - persist_to_workspace:
           root: .
           paths:
-            - node_modules
-            - packages
-            - npm
-            - tooling
-            - system-tests
-            - cli
+            - .
   use-prepared-env:
     steps:
       - attach_workspace:
