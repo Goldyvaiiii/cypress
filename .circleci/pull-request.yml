@@ -9,7 +9,7 @@ executors:
       - image: cypress/base-internal:22.15.1-bullseye
     environment:
       PLATFORM: linux
-    resource_class: small
+    resource_class: medium
 
 commands:
   build-repo:
@@ -17,7 +17,7 @@ commands:
       - run: |
           yarn patch-package
           yarn gulp syncCloudValidations
-          yarn nx run-many --target=build --all --exclude=root --verbose
+          yarn nx run-many --target=build --all --exclude=root
   prepare-environment:
     steps:
       - checkout
