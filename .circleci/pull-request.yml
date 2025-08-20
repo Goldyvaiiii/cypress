@@ -16,6 +16,7 @@ commands:
     steps:
       - run: |
           yarn patch-package
+          yarn gulp syncCloudValidations
           yarn nx run-many --target=build --all --exclude=root
   prepare-environment:
     steps:
