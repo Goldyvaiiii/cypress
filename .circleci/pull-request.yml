@@ -15,7 +15,7 @@ commands:
   build-repo:
     steps:
       - run: |
-          patch-package
+          yarn patch-package
           yarn nx run-many --target=build --all --exclude=root
   prepare-environment:
     steps:
