@@ -22,10 +22,17 @@ commands:
           pkg-manager: yarn
           with-cache: true
           cache-path: .yarn-cache
-      - run: yarn build
+      - run: yarn nx run-many --target=build --all --exclude=root
       - persist_to_workspace:
           root: .
-          paths: cypress
+          paths:
+            - node_modules
+            - packages
+            - npm
+            - tooling
+            - system-tests
+            - cli
+
 
   use-prepared-env:
     steps:
