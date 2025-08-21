@@ -39,14 +39,33 @@ commands:
       - persist_to_workspace:
           root: .
           paths:
-            - .
+            # Main build artifacts (dist directories)
+            - "packages/*/dist/**"
+            - "cli/*/dist/**"
+            - "npm/*/dist/**"
+            - "tooling/*/dist/**"
+            # Build directories
+            - "packages/*/build/**"
+            - "packages/example/build/**"
+            # Generated files
+            - "packages/*/src/generated/**"
+            - "packages/*/components.d.ts"
+            - "system-tests/lib/**"
+            # CLI build artifacts
+            - "cli/lib/**"
+            # Tooling artifacts
+            - "tooling/*/bin/**"
+            - "tooling/*/cache/**"
           ignore:
             - "**/node_modules/**"
+            - ".git/**"
   use-prepared-env:
     steps:
       - attach_workspace:
-          at: .
+          at: . 
+      - checkout
       - install-packages
+
 
 jobs:
   build:
