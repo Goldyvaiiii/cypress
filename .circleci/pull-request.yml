@@ -77,6 +77,8 @@ jobs:
       - prepare-environment
   lint:
     executor: linux-x64
+    environment:
+      - SKIP_POST_INSTALL: true
     steps:
       - use-prepared-env
       - run:
