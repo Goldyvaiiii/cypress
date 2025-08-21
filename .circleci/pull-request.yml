@@ -12,6 +12,12 @@ executors:
     resource_class: medium
 
 commands:
+  install-packages:
+    steps:
+      - node/install-packages:
+          pkg-manager: yarn
+          with-cache: true
+          cache-path: .yarn-cache
   build-repo:
     steps:
       - run:
@@ -27,19 +33,38 @@ commands:
       - run: |
           yarn config set cache-folder .yarn-cache
           yarn config set prefer-offline true
-      - node/install-packages:
-          pkg-manager: yarn
-          with-cache: true
-          cache-path: .yarn-cache
+      - install-packages
       - build-repo
       - persist_to_workspace:
           root: .
           paths:
-            - .
+            # Build artifacts and compiled code
+            - packages/*/dist
+            - packages/*/lib
+            - packages/*/build
+            - cli/lib
+            - cli/dist
+            # Configuration files
+            - packages/*/package.json
+            - packages/*/tsconfig.json
+            - packages/*/cypress.config.*
+            - cli/package.json
+            - cli/tsconfig.json
+            # Source files needed for linting
+            - packages/*/src
+            - cli/src
+            # Root configuration
+            - package.json
+            - yarn.lock
+            - tsconfig.json
+            - nx.json
+            - .eslintrc.*
+            - cypress.config.*
   use-prepared-env:
     steps:
       - attach_workspace:
           at: .
+      - install-packages
 
 jobs:
   build:
