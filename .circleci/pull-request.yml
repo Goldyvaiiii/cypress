@@ -61,11 +61,12 @@ commands:
             - ".git/**"
   use-prepared-env:
     steps:
-      - attach_workspace:
-          at: . 
       - checkout
       - install-packages
-
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: |
+          cp -r /tmp/workspace/* .
 
 jobs:
   build:
