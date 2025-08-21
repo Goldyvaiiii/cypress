@@ -18,12 +18,13 @@ commands:
           pkg-manager: yarn
           with-cache: true
           cache-path: .yarn-cache
+      - run: |
+            yarn patch-package
   build-repo:
     steps:
       - run:
-          name: Patch and Build
+          name: Build
           command: |
-            yarn patch-package
             yarn gulp syncCloudValidations
             yarn nx run-many --target=build --all --exclude=root
             yarn nx run @packages/electron:build-binary
@@ -38,28 +39,9 @@ commands:
       - persist_to_workspace:
           root: .
           paths:
-            # Build artifacts and compiled code
-            - packages/*/dist
-            - packages/*/lib
-            - packages/*/build
-            - cli/lib
-            - cli/dist
-            # Configuration files
-            - packages/*/package.json
-            - packages/*/tsconfig.json
-            - packages/*/cypress.config.*
-            - cli/package.json
-            - cli/tsconfig.json
-            # Source files needed for linting
-            - packages/*/src
-            - cli/src
-            # Root configuration
-            - package.json
-            - yarn.lock
-            - tsconfig.json
-            - nx.json
-            - .eslintrc.*
-            - cypress.config.*
+            - .
+          ignore:
+            - "**/node_modules/**"
   use-prepared-env:
     steps:
       - attach_workspace:
