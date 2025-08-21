@@ -77,7 +77,6 @@ jobs:
       - prepare-environment
   lint:
     executor: linux-x64
-    parallelism: 2
     environment:
       - SKIP_POST_INSTALL: true
     steps:
@@ -85,7 +84,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            yarn nx run-many --target=lint --all --parallel --shard=$((${CIRCLE_NODE_INDEX}+1))/${CIRCLE_NODE_TOTAL}
+            yarn nx run-many --target=lint --all --parallel=6
 
 workflows:
   pull-request:
