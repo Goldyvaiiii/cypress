@@ -14,6 +14,8 @@ executors:
 commands:
   install-packages:
     steps:
+      - run: |
+          echo "SKIP_POST_INSTALL=true" >> $BASH_ENV
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
@@ -26,42 +28,42 @@ commands:
           name: Ensure Type Definitions
           command: |
             yarn nx run-many --target=ci:ensure-typedefs --all --parallel
-  # build-repo:
-  #   steps:
-  #     - run:
-  #         name: Build
-  #         command: |
-  #           yarn gulp syncCloudValidations
-  #           yarn nx run-many --target=build --all --exclude=root
-  #           yarn nx run @packages/electron:build-binary
-  prepare-environment:
+  build-repo:
+    steps:
+      - run:
+          name: Build
+          command: |
+            yarn gulp syncCloudValidations
+            yarn nx run-many --target=build --all --exclude=root
+            yarn nx run @packages/electron:build-binary
+  prepare-workspace:
     steps:
       - checkout
       - run: |
           yarn config set cache-folder .yarn-cache
           yarn config set prefer-offline true
       - install-packages
-#      - build-repo
-      # - persist_to_workspace:
-      #     root: .
-      #     paths:
-      #       # Main build artifacts (dist directories)
-      #       - "packages/*/dist/**"
-      #       - "cli/*/dist/**"
-      #       - "npm/*/dist/**"
-      #       - "tooling/*/dist/**"
-      #       # Build directories
-      #       - "packages/*/build/**"
-      #       - "packages/example/build/**"
-      #       # Generated files
-      #       - "packages/*/src/generated/**"
-      #       - "packages/*/components.d.ts"
-      #       - "system-tests/lib/**"
-      #       # CLI build artifacts
-      #       - "cli/lib/**"
-      #       # Tooling artifacts
-      #       - "tooling/*/bin/**"
-      #       - "tooling/*/cache/**"
+      - build-repo
+      - persist_to_workspace:
+          root: .
+          paths:
+            # Main build artifacts (dist directories)
+            - "packages/*/dist/**"
+            - "cli/*/dist/**"
+            - "npm/*/dist/**"
+            - "tooling/*/dist/**"
+            # Build directories
+            - "packages/*/build/**"
+            - "packages/example/build/**"
+            # Generated files
+            - "packages/*/src/generated/**"
+            - "packages/*/components.d.ts"
+            - "system-tests/lib/**"
+            # CLI build artifacts
+            - "cli/lib/**"
+            # Tooling artifacts
+            - "tooling/*/bin/**"
+            - "tooling/*/cache/**"
   ensure-workspace:
     steps:
       - checkout
@@ -76,16 +78,8 @@ commands:
           fi
 
 jobs:
-  # build:
-  #   executor: linux-x64
-  #   environment:
-  #     - SKIP_POST_INSTALL: true
-  #   steps:
-  #     - prepare-environment
   lint:
     executor: linux-x64
-    environment:
-      - SKIP_POST_INSTALL: true
     steps:
       - ensure-workspace
       - ensure-typedefs
@@ -93,8 +87,26 @@ jobs:
           name: Lint
           command: |
               yarn nx run-many --target=lint --all --parallel
+  build:
+    executor: linux-x64
+    steps:
+      - prepare-workspace
+  unit-test:
+    executor: linux-x64
+    steps:
+      - ensure-workspace
+      - run:
+          name: Unit Test
+          command: |
+            yarn nx run-many --target=ci:test:unit --all --parallel
 
 workflows:
   pull-request:
     jobs:
       - lint
+      - build:
+          requires:
+            - lint
+      - unit-test:
+          requires:
+            - build
