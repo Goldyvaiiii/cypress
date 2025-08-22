@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            yarn nx run-many --target=lint --all --parallel=6
+            yarn nx run-many --target=lint --all --parallel
 
 workflows:
   pull-request:
