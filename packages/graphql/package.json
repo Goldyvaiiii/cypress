@@ -8,6 +8,7 @@
     "build": "graphql-codegen --config graphql-codegen.yml",
     "build-prod": "tsc || echo 'built, with errors'",
     "check-ts": "tsc --noEmit && yarn -s tslint",
+    "ci:ensure-typedefs": "graphql-codegen --config graphql-codegen.yml",
     "clean": "rimraf './{src,test}/**/*.js'",
     "clean-deps": "rimraf node_modules",
     "postinstall": "echo '@packages/graphql needs: yarn build'",

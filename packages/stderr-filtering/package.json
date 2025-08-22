@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "yarn clean && tsc",
+    "ci:ensure-typedefs": "tsc --emitDeclarationOnly --declaration",
     "clean": "rm -rf ./{dist,coverage}",
     "lint": "eslint",
     "test": "vitest",

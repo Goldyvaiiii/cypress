@@ -8,6 +8,7 @@
     "build": "node ./scripts/build.js",
     "build-prod": "tsc || echo 'built, with errors'",
     "check-ts": "tsc --noEmit && yarn -s tslint",
+    "ci:ensure-typedefs": "node ./scripts/build.js",
     "clean": "rimraf --glob \"./{src,test}/**/*.js\"",
     "clean-deps": "rimraf node_modules",
     "lint": "eslint --ext .js,.ts,.json, .",

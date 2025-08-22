@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "check-ts": "tsc --noEmit && yarn -s tslint",
+    "ci:ensure-typedefs": "tsc --emitDeclarationOnly --declaration",
     "clean": "rimraf dist",
     "test": "yarn test-unit",
     "test-unit": "mocha --config ./test/.mocharc.js",

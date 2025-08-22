@@ -7,6 +7,7 @@
   "scripts": {
     "build": "ts-node ./scripts/build.ts && ts-node ./scripts/ico.ts",
     "check-ts": "tsc --noEmit && yarn -s tslint",
+    "ci:ensure-typedefs": "tsc -p ./tsconfig.build.json --emitDeclarationOnly --declaration",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.json, .",
     "test": "yarn test-unit",
     "test-unit": "NODE_ENV=test mocha -r @packages/ts/register test/*.ts",

@@ -25,6 +25,9 @@
         "^build-prod"
       ],
       "cache": false
+    },
+    "ci:ensure-typedefs": {
+      "cache": true
     }
   },
   "namedInputs": {
