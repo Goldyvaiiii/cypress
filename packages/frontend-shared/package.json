@@ -6,6 +6,7 @@
     "build": "node ./script/build.js",
     "check-ts": "vue-tsc --noEmit && yarn -s tslint",
     "ci:generate-types": "node ./script/build.js",
+    "ci:test:unit": "yarn test",
     "clean": "rimraf dist ./node_modules/.vite src/*.js src/**/*.js && echo 'cleaned'",
     "clean-deps": "rimraf node_modules",
     "cypress:open": "cross-env TZ=America/New_York node ../../scripts/cypress open --component --project .",

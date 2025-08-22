@@ -6,6 +6,7 @@
   "scripts": {
     "build": "echo 'electron package build: no build necessary'",
     "build-binary": "node ./bin/cypress-electron --install",
+    "ci:test:unit": "yarn test-unit",
     "clean-deps": "rimraf node_modules",
     "postinstall": "echo '@packages/electron needs: yarn build'",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.json, .",

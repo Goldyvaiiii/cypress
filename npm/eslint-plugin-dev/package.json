@@ -4,7 +4,8 @@
   "description": "Common ESLint rules shared by Cypress development-only packages",
   "main": "./lib",
   "scripts": {
-    "lint": "eslint --ext .js,json,.eslintrc .",
+    "ci:test:unit": "yarn test",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.json, .",
     "lint-changed": "node ./lib/scripts/lint-changed",
     "lint-fix": "npm run lint -- --fix",
     "test": "mocha"

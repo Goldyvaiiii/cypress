@@ -6,6 +6,7 @@
   "scripts": {
     "build": "gulp build",
     "check-ts": "tsc --noEmit && yarn -s tslint",
+    "ci:test:unit": "yarn test-unit",
     "clean": "gulp clean",
     "clean-deps": "rimraf node_modules",
     "postinstall": "echo '@packages/extension needs: yarn build'",

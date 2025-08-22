@@ -6,6 +6,7 @@
   "scripts": {
     "build-prod": "tsc --project .",
     "check-ts": "tsc --noEmit && yarn -s tslint",
+    "ci:test:unit": "yarn test-unit",
     "clean": "rimraf 'lib/**/*.js'",
     "clean-deps": "rimraf node_modules",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.json, .",

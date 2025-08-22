@@ -4,6 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "ci:test:unit": "yarn test-unit",
     "clean-deps": "rimraf node_modules",
     "https": "node https.js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.json, .",

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "check-ts": "tsc --noEmit",
+    "ci:test:unit": "yarn test-unit",
     "clean-deps": "rimraf node_modules",
     "postinstall": "patch-package",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.json, .",

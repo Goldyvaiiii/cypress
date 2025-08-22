@@ -6,6 +6,7 @@
   "scripts": {
     "build": "yarn clean && tsc",
     "ci:ensure-typedefs": "tsc --emitDeclarationOnly --declaration",
+    "ci:test:unit": "vitest run",
     "clean": "rm -rf ./{dist,coverage}",
     "lint": "eslint",
     "test": "vitest",

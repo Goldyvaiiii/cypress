@@ -9,9 +9,11 @@
     "build": "tsc",
     "check-ts": "tsc --noEmit && yarn -s tslint",
     "ci:ensure-typedefs": "tsc --emitDeclarationOnly --declaration",
+    "ci:test:unit": "yarn test-unit",
     "clean": "rimraf dist",
     "test": "yarn test-unit",
     "test-unit": "mocha --config ./test/.mocharc.js",
+    "test-watch": "yarn test-unit --watch",
     "tslint": "tslint --config ../ts/tslint.json --project .",
     "watch": "tsc --watch"
   },

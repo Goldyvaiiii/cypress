@@ -7,6 +7,7 @@
   "scripts": {
     "build": "rimraf dist && tsc || echo 'built, with errors'",
     "check-ts": "tsc --noEmit",
+    "ci:test:unit": "yarn test-unit",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.json, .",
     "secure": "nsp check",
     "semantic-release": "semantic-release",

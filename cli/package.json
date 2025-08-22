@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build-cli": "node ./scripts/build.js && node ./scripts/post-build.js",
+    "ci:test:unit": "yarn test-unit",
     "clean": "node ./scripts/clean.js",
     "dtslint": "dtslint types",
     "postinstall": "patch-package && node ./scripts/post-install.js",

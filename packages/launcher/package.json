@@ -5,6 +5,7 @@
   "scripts": {
     "build-prod": "tsc --project .",
     "check-ts": "tsc --noEmit && yarn -s tslint",
+    "ci:test:unit": "yarn test-unit",
     "clean": "rimraf --glob \"lib/*.js\" && rimraf --glob \"lib/**/*.js\" || true",
     "clean-deps": "rimraf node_modules",
     "clean-js": "yarn clean",
@@ -12,6 +13,7 @@
     "size": "t=\"cypress-v0.0.0.tgz\"; yarn pack --filename \"${t}\"; wc -c \"cli/${t}\"; tar tvf \"${t}\"; rm \"${t}\";",
     "test": "yarn test-unit",
     "test-unit": "mocha --reporter mocha-multi-reporters --reporter-options configFile=../../mocha-reporter-config.json",
+    "test-watch": "yarn test-unit --watch",
     "tslint": "tslint --config ../ts/tslint.json --project ."
   },
   "dependencies": {
