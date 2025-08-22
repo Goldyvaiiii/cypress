@@ -69,7 +69,11 @@ commands:
       - attach_workspace:
           at: /tmp/workspace
       - run: |
-          [ -d /tmp/workspace ] && cp -r /tmp/workspace/* .
+          if [ -d /tmp/workspace ] && [ "$(ls -A /tmp/workspace)" ]; then
+            cp -r /tmp/workspace/* .
+          else
+            echo "No workspace to restore, continuing with fresh checkout"
+          fi
 
 jobs:
   # build:
