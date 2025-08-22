@@ -62,14 +62,14 @@ commands:
       #       # Tooling artifacts
       #       - "tooling/*/bin/**"
       #       - "tooling/*/cache/**"
-  use-prepared-env:
+  ensure-workspace:
     steps:
       - checkout
       - install-packages
       - attach_workspace:
           at: /tmp/workspace
       - run: |
-          cp -r /tmp/workspace/* .
+          [ -d /tmp/workspace ] && cp -r /tmp/workspace/* .
 
 jobs:
   # build:
@@ -83,7 +83,7 @@ jobs:
     environment:
       - SKIP_POST_INSTALL: true
     steps:
-      - use-prepared-env
+      - ensure-workspace
       - ensure-typedefs
       - run:
           name: Lint
