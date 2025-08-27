@@ -24,7 +24,7 @@ commands:
       - run:
           name: Install packages
           command: |
-            pnpm install --frozen-lockfile
+            pnpm install --frozen-lockfile --loglevel=verbose
       - save_cache:
           name: Save pnpm cache
           key: pnpm-{{ checksum "pnpm-lock.yaml" }}-{{ checksum ".circleci/cache-version.txt" }}
