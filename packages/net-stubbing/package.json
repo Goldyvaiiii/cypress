@@ -22,10 +22,10 @@
     "throttle": "^1.0.3"
   },
   "devDependencies": {
-    "@packages/network": "0.0.0-development",
-    "@packages/proxy": "0.0.0-development",
-    "@packages/server": "0.0.0-development",
-    "@packages/telemetry": "0.0.0-development",
+    "@packages/network": "workspace:*",
+    "@packages/proxy": "workspace:*",
+    "@packages/server": "workspace:*",
+    "@packages/telemetry": "workspace:*",
     "@types/mime": "^3.0.1",
     "chai": "4.2.0",
     "mocha": "7.1.2"

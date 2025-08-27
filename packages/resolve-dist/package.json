@@ -15,7 +15,7 @@
     "fs-extra": "9.1.0"
   },
   "devDependencies": {
-    "@packages/ts": "0.0.0-development"
+    "@packages/ts": "workspace:*"
   },
   "files": [
     "lib"

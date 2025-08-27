@@ -29,10 +29,10 @@
     "strip-ansi": "6.0.1"
   },
   "devDependencies": {
-    "@packages/eslint-config": "0.0.0-development",
-    "@packages/server": "0.0.0-development",
-    "@packages/ts": "0.0.0-development",
-    "@packages/types": "0.0.0-development",
+    "@packages/eslint-config": "workspace:*",
+    "@packages/server": "workspace:*",
+    "@packages/ts": "workspace:*",
+    "@packages/types": "workspace:*",
     "@types/chai": "4.2.15",
     "@types/mocha": "8.2.2",
     "@types/node": "20.16.0",

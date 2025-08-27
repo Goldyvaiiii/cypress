@@ -33,7 +33,7 @@
     "webpack-bundle-analyzer": "4.10.2"
   },
   "devDependencies": {
-    "@cypress/webpack-preprocessor": "0.0.0-development",
+    "@cypress/webpack-preprocessor": "workspace:*",
     "@types/mocha": "^8.0.2",
     "@types/webpack": "^5.28.1",
     "chai": "^4.2.0",

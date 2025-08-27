@@ -23,8 +23,8 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@packages/icons": "0.0.0-development",
-    "@packages/socket": "0.0.0-development",
+    "@packages/icons": "workspace:*",
+    "@packages/socket": "workspace:*",
     "chai": "3.5.0",
     "chokidar-cli": "2.1.0",
     "cross-env": "7.0.3",

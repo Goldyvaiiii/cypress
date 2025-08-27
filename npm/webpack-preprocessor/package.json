@@ -33,7 +33,7 @@
     "chai": "4.1.2",
     "chalk": "3.0.0",
     "chokidar-cli": "2.1.0",
-    "cypress": "0.0.0-development",
+    "cypress": "workspace:*",
     "fs-extra": "^10.1.0",
     "mocha": "^7.1.0",
     "mockery": "2.1.0",

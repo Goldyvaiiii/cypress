@@ -244,44 +244,8 @@
     "test",
     "testing"
   ],
-  "workspaces": {
-    "packages": [
-      "cli",
-      "packages/*",
-      "npm/*",
-      "tooling/*",
-      "system-tests",
-      "scripts"
-    ],
-    "nohoist": [
-      "**/@wdio/*",
-      "**/webpack-preprocessor/babel-loader",
-      "**/webpack-preprocessor/**/merge-source-map",
-      "**/webpack-preprocessor/**/patch-package",
-      "**/webpack-batteries-included-preprocessor/ts-loader",
-      "**/jest",
-      "**/jest*",
-      "**/expect"
-    ]
-  },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,eslintrc,vue}": "eslint --fix",
     ".circleci/*.yml": "circleci config validate"
-  },
-  "resolutions": {
-    "**/@types/cheerio": "0.22.21",
-    "**/@types/enzyme": "3.10.5",
-    "**/jquery": "3.7.1",
-    "**/pretty-format": "26.4.0",
-    "**/sharp": "0.29.3",
-    "**/socket.io-parser": "4.0.5",
-    "**/ua-parser-js": "0.7.33",
-    "@types/react": "18.3.12",
-    "browserify-sign": "4.2.2",
-    "devtools-protocol": "0.0.1459876",
-    "node-abi": "4.9.0",
-    "sharp": "0.29.3",
-    "vue-template-compiler": "2.6.12"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  }
 }

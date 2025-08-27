@@ -15,12 +15,12 @@
     "watch": "yarn build --watch --watch.exclude ./dist/**/*"
   },
   "devDependencies": {
-    "@cypress/mount-utils": "0.0.0-development",
+    "@cypress/mount-utils": "workspace:*",
     "@vitejs/plugin-vue": "6.0.0",
     "@vue/compiler-sfc": "3.2.47",
     "@vue/test-utils": "2.4.6",
     "axios": "0.21.2",
-    "cypress": "0.0.0-development",
+    "cypress": "workspace:*",
     "debug": "^4.3.4",
     "globby": "^11.0.1",
     "tailwindcss": "1.1.4",

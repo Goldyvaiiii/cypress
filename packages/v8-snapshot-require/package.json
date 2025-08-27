@@ -18,12 +18,12 @@
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "@packages/packherd-require": "0.0.0-development",
+    "@packages/packherd-require": "workspace:*",
     "debug": "^4.3.4",
     "source-map-js": "^0.6.2"
   },
   "devDependencies": {
-    "@tooling/packherd": "0.0.0-development",
+    "@tooling/packherd": "workspace:*",
     "mocha": "7.0.1"
   },
   "files": [

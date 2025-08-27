@@ -16,7 +16,7 @@
     "@angular/common": "^18.0.0",
     "@angular/core": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
-    "@cypress/mount-utils": "0.0.0-development",
+    "@cypress/mount-utils": "workspace:*",
     "rollup": "^4.24.4",
     "typescript": "~5.4.5",
     "zone.js": "~0.14.6"

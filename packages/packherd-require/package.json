@@ -23,7 +23,7 @@
     "source-map-js": "^0.6.2"
   },
   "devDependencies": {
-    "@packages/ts": "0.0.0-development",
+    "@packages/ts": "workspace:*",
     "esbuild": "^0.25.2",
     "mocha": "7.0.1"
   },

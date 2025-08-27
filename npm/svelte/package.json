@@ -11,7 +11,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx,.json, ."
   },
   "devDependencies": {
-    "@cypress/mount-utils": "0.0.0-development",
+    "@cypress/mount-utils": "workspace:*",
     "svelte": "^5.4.0",
     "typescript": "~5.4.5"
   },
