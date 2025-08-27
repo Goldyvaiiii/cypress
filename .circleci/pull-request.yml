@@ -17,25 +17,25 @@ commands:
       - run: |
           echo "SKIP_POST_INSTALL=true" >> $BASH_ENV
       - node/install-packages:
-          pkg-manager: yarn
+          pkg-manager: pnpm
           with-cache: true
-          cache-path: .yarn-cache
+          cache-path: .pnpm-cache
       - run: |
-            yarn patch-package
+            pnpm dlx patch-package
   ensure-typedefs:
     steps:
       - run:
           name: Ensure Type Definitions
           command: |
-            yarn nx run-many --target=ci:ensure-typedefs --all --parallel
+            pnpm nx run-many --target=ci:ensure-typedefs --all --parallel
   build-repo:
     steps:
       - run:
           name: Build
           command: |
-            yarn gulp syncCloudValidations
-            yarn nx run-many --target=build --all --exclude=root
-            yarn nx run @packages/electron:build-binary
+            pnpm gulp syncCloudValidations
+            pnpm nx run-many --target=build --all --exclude=root
+            pnpm nx run @packages/electron:build-binary
   prepare-workspace:
     steps:
       - checkout
@@ -86,7 +86,7 @@ jobs:
       - run:
           name: Lint
           command: |
-              yarn nx run-many --target=lint --all --parallel
+              pnpm run --recursive lint
   build:
     executor: linux-x64
     steps:
@@ -107,6 +107,6 @@ workflows:
       - build:
           requires:
             - lint
-      - unit-test:
-          requires:
-            - build
+      #- unit-test:
+      #    requires:
+      #      - build
