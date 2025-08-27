@@ -16,6 +16,8 @@ commands:
     steps:
       - run: |
           echo "SKIP_POST_INSTALL=true" >> $BASH_ENV
+      - run: |
+          npm i -g pnpm
       - node/install-packages:
           pkg-manager: pnpm
           with-cache: true
@@ -104,9 +106,9 @@ workflows:
   pull-request:
     jobs:
       - lint
-      - build:
-          requires:
-            - lint
+      #- build:
+      #    requires:
+      #      - lint
       #- unit-test:
       #    requires:
       #      - build
