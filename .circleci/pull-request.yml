@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@7.1.1
-
 executors:
   linux-x64:
     docker:
@@ -16,12 +13,23 @@ commands:
     steps:
       - run: |
           echo "SKIP_POST_INSTALL=true" >> $BASH_ENV
-      - run: |
-          npm i -g pnpm
-      - node/install-packages:
-          pkg-manager: pnpm
-          with-cache: true
-          cache-path: .pnpm-cache
+      - restore_cache:
+          name: Restore pnpm cache
+          key: pnpm-pkgs-{{ checksum "pnpm-lock.yaml" }}-{{ checksum ".circleci/cache-version.txt" }}
+      - run:
+          name: Install pnpm
+          command: |
+            npm i -g pnpm
+            pnpm config set store-dir .pnpm-store
+      - run:
+          name: Install packages
+          command: |
+            pnpm install --frozen-lockfile
+      - save_cache:
+          name: Save pnpm cache
+          key: pnpm-{{ checksum "pnpm-lock.yaml" }}-{{ checksum ".circleci/cache-version.txt" }}
+          paths:
+            - .pnpm-cache
       - run: |
             pnpm dlx patch-package
   ensure-typedefs:
@@ -41,9 +49,6 @@ commands:
   prepare-workspace:
     steps:
       - checkout
-      - run: |
-          yarn config set cache-folder .yarn-cache
-          yarn config set prefer-offline true
       - install-packages
       - build-repo
       - persist_to_workspace:
