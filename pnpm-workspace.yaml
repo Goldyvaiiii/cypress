@@ -1,7 +1,33 @@
 packages:
-  - 'packages/*'
-  - 'npm/*'
-  - 'tooling/*'
-  - 'cli'
-  - 'scripts'
-  - 'system-tests'
+  - packages/*
+  - npm/*
+  - tooling/*
+  - cli
+  - scripts
+  - system-tests
+
+onlyBuiltDependencies:
+  - '@cypress/parse-domain'
+  - '@ffmpeg-installer/darwin-arm64'
+  - '@ffprobe-installer/darwin-arm64'
+  - '@fortawesome/fontawesome-free'
+  - '@percy/core'
+  - better-sqlite3
+  - core-js
+  - core-js-pure
+  - cpu-features
+  - cypress
+  - edgedriver
+  - electron
+  - es5-ext
+  - esbuild
+  - fmerge
+  - fsevents
+  - geckodriver
+  - nx
+  - playwright-webkit
+  - registry-js
+  - ssh2
+  - unrs-resolver
+  - vue-demi
+  - win-version-info

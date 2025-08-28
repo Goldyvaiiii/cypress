@@ -76,6 +76,7 @@
     "@cypress/sinon-chai": "2.9.1",
     "@cypress/svelte": "workspace:*",
     "@cypress/vue": "workspace:*",
+    "@packages/net-stubbing": "workspace:*",
     "@packages/root": "workspace:*",
     "@types/bluebird": "3.5.33",
     "@types/chai": "4.2.15",

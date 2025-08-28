@@ -588,6 +588,9 @@ importers:
       '@cypress/vue':
         specifier: workspace:*
         version: link:../npm/vue
+      '@packages/net-stubbing':
+        specifier: workspace:*
+        version: link:../packages/net-stubbing
       '@packages/root':
         specifier: workspace:*
         version: link:../packages/root
@@ -10606,10 +10609,6 @@ packages:
     resolution: {integrity: sha512-F/TKATkzseUExPlfvmwQKGITM3DGTK+vkAsCZoDc5daVygbJBnjEUCbgkAvVFsgfXfX4YIqZ/27G3k3tdXrTxQ==}
     engines: {node: '>= 0.4'}
 
-  array.prototype.flat@1.3.2:
-    resolution: {integrity: sha512-djYB+Zx2vLewY8RWlNCUdHjDXs2XOgm602S9E7P/UpHgfeHL00cRiIF+IN/G/aUJ7kGPb6yO/ErDI5V2s8iycA==}
-    engines: {node: '>= 0.4'}
-
   array.prototype.flat@1.3.3:
     resolution: {integrity: sha512-rwG/ja1neyLqCuGZ5YYrznA62D4mZXg0i1cIskIUKSiqF3Cje9/wXAls9B9s1Wa2fomMsIv8czB8jZcPmxCXFg==}
     engines: {node: '>= 0.4'}
@@ -10723,9 +10722,6 @@ packages:
   async@0.9.2:
     resolution: {integrity: sha512-l6ToIJIotphWahxxHyzK9bnLR6kM4jJIIgLShZeqLY7iboHoGkdgFl7W2/Ivi4SkMJYGKqW8vSuk0uKUj6qsSw==}
 
-  async@3.2.4:
-    resolution: {integrity: sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==}
-
   async@3.2.6:
     resolution: {integrity: sha512-htCUDlxyyCLMgaM3xXg0C0LW2xqfuQ6p05pCEIsXuyQ+a1koYKTuBMzRNwmybfLgvJDMd0r1LTn4+E0Ti6C2AA==}
 
@@ -10797,9 +10793,6 @@ packages:
   axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
     engines: {node: '>= 0.4'}
-
-  b4a@1.6.6:
-    resolution: {integrity: sha512-5Tk1HLk6b6ctmjIkAcU/Ujv/1WqiDl0F0JdRCR80VsOcUlHcu7pWeWRlOqQLHfDEsVx9YH/aif5AG4ehoCtTmg==}
 
   b4a@1.6.7:
     resolution: {integrity: sha512-OnAYlL5b7LEkALw87fUVafQw5rVR9RjwGd4KUwNQ6DrrNmaVaUCgLipfVlzrPQ4tWOR9P0IXGNOx50jYCCdSJg==}
@@ -13167,9 +13160,6 @@ packages:
     resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
 
-  es-shim-unscopables@1.0.2:
-    resolution: {integrity: sha512-J3yBRXCzDu4ULnQwxyToo/OjdMx6akgVC7K6few0a7F/0wLtmKKN7I73AH5T2836UuXRqN7Qg+IIUw/+YJksRw==}
-
   es-shim-unscopables@1.1.0:
     resolution: {integrity: sha512-d9T8ucsEhh8Bi1woXCf+TIKDIROLG5WCkxg8geBCbvk22kzwC5G2OnXVMO6FUsvQlgUUXQ2itephWDLqDzbeCw==}
     engines: {node: '>= 0.4'}
@@ -14801,10 +14791,6 @@ packages:
     resolution: {integrity: sha512-ODYZC64uqzmtfGMEAX/FvZiRyWLpAC3vYnNunURUnkGVTS+mI0smVsWaPydRBsE3g+ok7h960jChO8mFcWlHaQ==}
     engines: {node: '>=0.10.0'}
 
-  has@1.0.3:
-    resolution: {integrity: sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==}
-    engines: {node: '>= 0.4.0'}
-
   has@1.0.4:
     resolution: {integrity: sha512-qdSAmqLF6209RFj4VVItywPMbm3vWylknmB3nvNiUIs72xAimcM8nVYxYr7ncvZq5qzk9MKIZR8ijqD/1QuYjQ==}
     engines: {node: '>= 0.4.0'}
@@ -14855,9 +14841,6 @@ packages:
   hook-std@3.0.0:
     resolution: {integrity: sha512-jHRQzjSDzMtFy34AGj1DN+vq54WVuhSvKgrHf0OMiFQTwDD4L/qqofVEWjLOBMTn5+lCD3fPg32W9yOfnEJTTw==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-
-  hosted-git-info@2.8.8:
-    resolution: {integrity: sha512-f/wzC2QaWBs7t9IYqB4T3sR1xviIViXJRJTWBlx2Gf3g0Xi5vI7Yy4koXQ1c9OYDGHN9sBy1DQ2AB8fqZBWhUg==}
 
   hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
@@ -16126,10 +16109,6 @@ packages:
   lazy-val@1.0.5:
     resolution: {integrity: sha512-0/BnGCCfyUMkBpeDgWihanIAF9JmZhHBgUhEqzvf+adhNGLoP6TaiI5oF8oyb3I45P+PcnrqihSf01M0l0G5+Q==}
 
-  lazystream@1.0.0:
-    resolution: {integrity: sha512-/330KFbmC/zKdtZoVDRwvkJ8snrJyBPfoZ39zsJl2O24HOE1CTNiEbeZmHXmjBVxTSSv7JlJEXPYhU83DhA2yg==}
-    engines: {node: '>= 0.6.3'}
-
   lazystream@1.0.1:
     resolution: {integrity: sha512-b94GiNHQNy6JNTrt5w6zNyffMrNkXZb3KTkCZJb2V1xaEGCk093vkZ2jk3tpaeP33/OiXC+WvK9AxUebnf5nbw==}
     engines: {node: '>= 0.6.3'}
@@ -16979,10 +16958,6 @@ packages:
     resolution: {integrity: sha512-MbkQQ2CTiBMlA2Dm/5cY+9SWFEN8pzzOXi6rlM5Xxq0Yqbda5ZQy9sU75a673FE9ZK0Zsbr6Y5iP6u9nktfg2g==}
     engines: {node: '>=8'}
 
-  minipass@3.1.6:
-    resolution: {integrity: sha512-rty5kpw9/z8SX9dmxblFA6edItUmwJgMeYDZRrwlIVN27i8gysGbznJwUggw2V/FVqFSDdWy040ZPS811DYAqQ==}
-    engines: {node: '>=8'}
-
   minipass@3.3.6:
     resolution: {integrity: sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==}
     engines: {node: '>=8'}
@@ -17783,10 +17758,6 @@ packages:
 
   object-inspect@1.13.4:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
-    engines: {node: '>= 0.4'}
-
-  object-is@1.1.5:
-    resolution: {integrity: sha512-3cyDsyHgtmi7I7DfSSI2LDp6SK2lwvtbg0p0R1e0RvTqF5ceGx+K2dfSjm1bKDMVCFEDAQvy+o8c6a7VujOddw==}
     engines: {node: '>= 0.4'}
 
   object-is@1.1.6:
@@ -19261,9 +19232,6 @@ packages:
 
   readable-stream@1.1.14:
     resolution: {integrity: sha512-+MeVjFf4L44XUkhM1eYbD8fyEsxcV81pqMSR5gblfcLCHfZvbrqy4/qYHE+/R5HoBUT11WV5O08Cr1n3YXkWVQ==}
-
-  readable-stream@2.3.7:
-    resolution: {integrity: sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw==}
 
   readable-stream@2.3.8:
     resolution: {integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==}
@@ -20809,9 +20777,6 @@ packages:
     resolution: {integrity: sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ==}
     engines: {node: '>=6'}
 
-  tar-stream@3.1.6:
-    resolution: {integrity: sha512-B/UyjYwPpMBv+PaFSWAmtYjwdrlEaZQEhMIBFNC5oEG8lpiW8XjcSdmEaClj28ArfKScKHs2nshz3k2le6crsg==}
-
   tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
 
@@ -21025,10 +20990,6 @@ packages:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
     engines: {node: '>=0.6.0'}
 
-  tmp@0.2.4:
-    resolution: {integrity: sha512-UdiSoX6ypifLmrfQ/XfiawN6hkjSBpCjhKxxZcWlUUmoXLaCKQU0bx4HF/tdDK2uzRuchf1txGvrWBzYREssoQ==}
-    engines: {node: '>=14.14'}
-
   tmp@0.2.5:
     resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
     engines: {node: '>=14.14'}
@@ -21223,9 +21184,6 @@ packages:
 
   tslib@2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
-
-  tslib@2.6.2:
-    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
@@ -22977,7 +22935,7 @@ snapshots:
 
   '@angular/compiler@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.10))':
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.3.1
     optionalDependencies:
       '@angular/core': 18.2.13(rxjs@7.8.2)(zone.js@0.14.10)
 
@@ -23005,7 +22963,7 @@ snapshots:
     dependencies:
       '@angular/common': 18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.10))(rxjs@7.8.2)
       '@angular/core': 18.2.13(rxjs@7.8.2)(zone.js@0.14.10)
-      tslib: 2.6.2
+      tslib: 2.3.1
 
   '@antfu/install-pkg@0.3.5':
     dependencies:
@@ -25702,7 +25660,7 @@ snapshots:
     dependencies:
       '@definitelytyped/typescript-versions': 0.1.9
       '@definitelytyped/utils': 0.1.8
-      semver: 7.7.2
+      semver: 7.7.1
 
   '@definitelytyped/typescript-versions@0.1.9': {}
 
@@ -25714,7 +25672,7 @@ snapshots:
       charm: 1.0.2
       minimatch: 9.0.5
       tar: 6.2.1
-      tar-stream: 3.1.6
+      tar-stream: 3.1.7
       which: 4.0.0
 
   '@develar/schema-utils@2.6.5':
@@ -27757,7 +27715,7 @@ snapshots:
   '@npmcli/fs@2.1.2':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.7.2
+      semver: 7.7.1
 
   '@npmcli/fs@3.1.1':
     dependencies:
@@ -28528,14 +28486,14 @@ snapshots:
   '@qiwi/npm-registry-client@8.9.1':
     dependencies:
       concat-stream: 2.0.0
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
       normalize-package-data: 3.0.3
       npm-package-arg: 6.1.1
       once: 1.4.0
       request: 2.88.2
       retry: 0.12.0
       safe-buffer: 5.2.1
-      semver: 7.7.2
+      semver: 7.7.1
       slide: 1.1.6
       ssri: 8.0.1
     optionalDependencies:
@@ -29962,6 +29920,7 @@ snapshots:
   '@types/node@22.17.1':
     dependencies:
       undici-types: 6.21.0
+    optional: true
 
   '@types/node@22.18.0':
     dependencies:
@@ -30210,7 +30169,7 @@ snapshots:
 
   '@types/websocket@1.0.2':
     dependencies:
-      '@types/node': 22.17.1
+      '@types/node': 22.18.0
 
   '@types/which@2.0.2': {}
 
@@ -31475,22 +31434,22 @@ snapshots:
 
   archiver-utils@2.1.0:
     dependencies:
-      glob: 7.2.3
-      graceful-fs: 4.2.11
-      lazystream: 1.0.0
+      glob: 7.2.0
+      graceful-fs: 4.2.9
+      lazystream: 1.0.1
       lodash.defaults: 4.2.0
       lodash.difference: 4.5.0
       lodash.flatten: 4.4.0
       lodash.isplainobject: 4.0.6
       lodash.union: 4.6.0
       normalize-path: 3.0.0
-      readable-stream: 2.3.7
+      readable-stream: 2.3.8
 
   archiver-utils@3.0.4:
     dependencies:
       glob: 7.2.3
-      graceful-fs: 4.2.11
-      lazystream: 1.0.0
+      graceful-fs: 4.2.9
+      lazystream: 1.0.1
       lodash.defaults: 4.2.0
       lodash.difference: 4.5.0
       lodash.flatten: 4.4.0
@@ -31502,7 +31461,7 @@ snapshots:
   archiver@5.3.2:
     dependencies:
       archiver-utils: 2.1.0
-      async: 3.2.4
+      async: 3.2.6
       buffer-crc32: 0.2.13
       readable-stream: 3.6.2
       readdir-glob: 1.1.3
@@ -31652,13 +31611,6 @@ snapshots:
       es-object-atoms: 1.1.1
       es-shim-unscopables: 1.1.0
 
-  array.prototype.flat@1.3.2:
-    dependencies:
-      call-bind: 1.0.8
-      define-properties: 1.2.1
-      es-abstract: 1.24.0
-      es-shim-unscopables: 1.0.2
-
   array.prototype.flat@1.3.3:
     dependencies:
       call-bind: 1.0.8
@@ -31786,8 +31738,6 @@ snapshots:
 
   async@0.9.2: {}
 
-  async@3.2.4: {}
-
   async@3.2.6: {}
 
   asynckit@0.4.0: {}
@@ -31870,8 +31820,6 @@ snapshots:
       - debug
 
   axobject-query@4.1.0: {}
-
-  b4a@1.6.6: {}
 
   b4a@1.6.7: {}
 
@@ -34796,15 +34744,15 @@ snapshots:
   enzyme-shallow-equal@1.0.7:
     dependencies:
       hasown: 2.0.2
-      object-is: 1.1.5
+      object-is: 1.1.6
 
   enzyme@3.11.0:
     dependencies:
-      array.prototype.flat: 1.3.2
+      array.prototype.flat: 1.3.3
       cheerio: 1.1.2
       enzyme-shallow-equal: 1.0.7
       function.prototype.name: 1.1.8
-      has: 1.0.3
+      has: 1.0.4
       html-element-map: 1.3.1
       is-boolean-object: 1.2.2
       is-callable: 1.2.7
@@ -34815,7 +34763,7 @@ snapshots:
       lodash.escape: 4.0.1
       lodash.isequal: 4.5.0
       object-inspect: 1.13.4
-      object-is: 1.1.5
+      object-is: 1.1.6
       object.assign: 4.1.7
       object.entries: 1.1.9
       object.values: 1.2.1
@@ -34955,10 +34903,6 @@ snapshots:
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
       has-tostringtag: 1.0.2
-      hasown: 2.0.2
-
-  es-shim-unscopables@1.0.2:
-    dependencies:
       hasown: 2.0.2
 
   es-shim-unscopables@1.1.0:
@@ -37347,10 +37291,6 @@ snapshots:
       is-number: 3.0.0
       kind-of: 4.0.0
 
-  has@1.0.3:
-    dependencies:
-      function-bind: 1.1.2
-
   has@1.0.4: {}
 
   hash-base@2.0.2:
@@ -37403,8 +37343,6 @@ snapshots:
       parse-passwd: 1.0.0
 
   hook-std@3.0.0: {}
-
-  hosted-git-info@2.8.8: {}
 
   hosted-git-info@2.8.9: {}
 
@@ -38680,10 +38618,6 @@ snapshots:
 
   lazy-val@1.0.5: {}
 
-  lazystream@1.0.0:
-    dependencies:
-      readable-stream: 2.3.7
-
   lazystream@1.0.1:
     dependencies:
       readable-stream: 2.3.8
@@ -39007,7 +38941,7 @@ snapshots:
 
   load-json-file@1.1.0:
     dependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
       parse-json: 2.2.0
       pify: 2.3.0
       pinkie-promise: 2.0.1
@@ -39015,7 +38949,7 @@ snapshots:
 
   load-json-file@2.0.0:
     dependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
       parse-json: 2.2.0
       pify: 2.3.0
       strip-bom: 3.0.0
@@ -39748,10 +39682,6 @@ snapshots:
   minipass-sized@1.0.3:
     dependencies:
       minipass: 3.3.6
-
-  minipass@3.1.6:
-    dependencies:
-      yallist: 4.0.0
 
   minipass@3.3.6:
     dependencies:
@@ -40514,7 +40444,7 @@ snapshots:
       nopt: 6.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.7.2
+      semver: 7.7.1
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:
@@ -40654,7 +40584,7 @@ snapshots:
 
   npm-package-arg@6.1.1:
     dependencies:
-      hosted-git-info: 2.8.8
+      hosted-git-info: 2.8.9
       osenv: 0.1.5
       semver: 5.7.2
       validate-npm-package-name: 3.0.0
@@ -40844,11 +40774,6 @@ snapshots:
   object-hash@3.0.0: {}
 
   object-inspect@1.13.4: {}
-
-  object-is@1.1.5:
-    dependencies:
-      call-bind: 1.0.8
-      define-properties: 1.2.1
 
   object-is@1.1.6:
     dependencies:
@@ -41570,7 +41495,7 @@ snapshots:
 
   path-type@1.1.0:
     dependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
       pify: 2.3.0
       pinkie-promise: 2.0.1
 
@@ -42497,16 +42422,6 @@ snapshots:
       inherits: 2.0.4
       isarray: 0.0.1
       string_decoder: 0.10.31
-
-  readable-stream@2.3.7:
-    dependencies:
-      core-util-is: 1.0.2
-      inherits: 2.0.4
-      isarray: 1.0.0
-      process-nextick-args: 2.0.1
-      safe-buffer: 5.1.2
-      string_decoder: 1.1.1
-      util-deprecate: 1.0.2
 
   readable-stream@2.3.8:
     dependencies:
@@ -44139,7 +44054,7 @@ snapshots:
 
   ssri@8.0.1:
     dependencies:
-      minipass: 3.1.6
+      minipass: 3.3.6
 
   ssri@9.0.1:
     dependencies:
@@ -44697,12 +44612,6 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 3.6.2
 
-  tar-stream@3.1.6:
-    dependencies:
-      b4a: 1.6.6
-      fast-fifo: 1.3.2
-      streamx: 2.22.1
-
   tar-stream@3.1.7:
     dependencies:
       b4a: 1.6.7
@@ -44925,13 +44834,11 @@ snapshots:
 
   tmp-promise@3.0.3:
     dependencies:
-      tmp: 0.2.4
+      tmp: 0.2.5
 
   tmp@0.0.33:
     dependencies:
       os-tmpdir: 1.0.2
-
-  tmp@0.2.4: {}
 
   tmp@0.2.5: {}
 
@@ -45218,8 +45125,6 @@ snapshots:
   tslib@2.3.1: {}
 
   tslib@2.4.1: {}
-
-  tslib@2.6.2: {}
 
   tslib@2.8.1: {}
 
