@@ -38,6 +38,8 @@
     "@packages/stderr-filtering": "workspace:*",
     "@packages/telemetry": "workspace:*",
     "@types/mime": "^3.0.1",
+    "@wdio/protocols": "9.14.0",
+    "@wdio/utils": "9.14.0",
     "ansi_up": "5.0.0",
     "ast-types": "0.13.3",
     "axios": "^1.7.9",

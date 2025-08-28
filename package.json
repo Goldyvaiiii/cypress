@@ -247,5 +247,6 @@
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,eslintrc,vue}": "eslint --fix",
     ".circleci/*.yml": "circleci config validate"
-  }
+  },
+  "packageManager": "pnpm@10.15.0"
 }
