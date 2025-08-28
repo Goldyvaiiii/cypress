@@ -1,6 +1,6 @@
 const { execSync } = require('child_process')
 
-if (process.env.SKIP_POST_INSTALL) {
+if (process.env.SKIP_POST_INSTALL || process.env.CI) {
   console.log('Skipping post-install script due to SKIP_POST_INSTALL environment variable')
   process.exit(0)
 }
