@@ -14,7 +14,7 @@ const debugStderr = require('debug')('cypress:internal-stderr')
 
 fs = Promise.promisifyAll(fs)
 
-const { filter, DEBUG_PREFIX } = require('@packages/stderr-filtering')
+const { filter, trace, DEBUG_PREFIX } = require('@packages/stderr-filtering')
 
 /**
  * If running as root on Linux, no-sandbox must be passed or Chrome will not start
@@ -177,7 +177,7 @@ module.exports = {
       if ([1, '1'].includes(process.env.ELECTRON_ENABLE_LOGGING)) {
         spawned.stderr.pipe(process.stderr)
       } else {
-        spawned.stderr.pipe(filter(process.stderr, debugStderr, DEBUG_PREFIX))
+        spawned.stderr.pipe(trace(spawned)).pipe(filter(process.stderr, debugStderr, DEBUG_PREFIX))
       }
 
       spawned.stdout.pipe(process.stdout)

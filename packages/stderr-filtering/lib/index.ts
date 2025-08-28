@@ -11,3 +11,5 @@ export { filter } from './Filter'
 export { logError } from './logError'
 
 export { START_TAG, END_TAG, DEBUG_PREFIX } from './constants'
+
+export { trace } from './Trace'
