@@ -1,0 +1,9 @@
+executor: linux-x64
+steps:
+  - prepare-workspace
+  - ensure-typedefs
+  - run:
+      name: Lint 🧹
+      command: |
+          yarn nx run-many --target=lint --all --parallel
+          yarn workspace cypress dtslint

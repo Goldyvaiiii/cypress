@@ -6,6 +6,7 @@ firefox-stable-version: &firefox-stable-version "142.0"
 
 orbs:
   browser-tools: circleci/browser-tools@2.1.1
+  node: circleci/node@7.1.1
 
 defaults: &defaults
   parallelism: 1
@@ -31,14 +32,16 @@ defaults: &defaults
     LINES: 24
 
 executors:
-  # the Docker image with Cypress dependencies and Chrome browser
-  cy-doc:
+  # executor to run on Linux x64
+  linux-x64: &linux-x64-exec
     docker:
       - image: cypress/base-internal:22.15.1-bullseye
     # by default, we use "medium" to balance performance + CI costs. bump or reduce on a per-job basis if needed.
     resource_class: medium
     environment:
       PLATFORM: linux
+  # alias for linux-x64 for backwards compatibility
+  cy-doc: &linux-x64-exec
 
   kitchensink-executor:
     docker:

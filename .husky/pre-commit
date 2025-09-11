@@ -2,6 +2,24 @@
 . "$(dirname "$0")/_/husky.sh"
 if git diff --cached --name-only | grep -q "^\.circleci/src/"; then
   yarn pack-ci
+
+  for dir in ./.circleci/src/*/; do
+    dirname=$(basename "$dir")
+    output_file="./.circleci/${dirname}.yml"
+
+    if ! git diff --quiet -- ./.circleci/${dir}.yml; then
+      echo "  🔍 Validating ${output_file}"
+      if ! circleci config validate "$output_file"; then
+        echo "    ❌ ${output_file} failed validation"
+        exit 1
+      fi
+      echo "    ✅ ${output_file} configuration validated successfully"
+      
+      git add "$output_file"
+      echo "  📝 ${output_file} staged for commit"
+    fi
+  done
+  
 else
   echo "⏭️ No CircleCI configurations changed, skipping CI packaging"
 fi

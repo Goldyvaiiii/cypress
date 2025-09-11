@@ -9,6 +9,7 @@ when:
         value: << pipeline.git.branch >>
 
 jobs:
+  - minimal-lint
   - node_modules_install:
       build-better-sqlite3: true
   - build:
@@ -16,10 +17,6 @@ jobs:
       requires:
         - node_modules_install
   - check-ts:
-      requires:
-        - build
-  - lint:
-      name: linux-lint
       requires:
         - build
   - percy-finalize:

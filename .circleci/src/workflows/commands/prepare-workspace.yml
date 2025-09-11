@@ -1,0 +1,28 @@
+steps:
+  - checkout
+  - run: |
+      yarn config set cache-folder .yarn-cache
+      yarn config set prefer-offline true
+  - install-packages
+  - build-repo
+  # persisting build artifacts may not be necessary with nx caching
+  - persist_to_workspace:
+      root: .
+      paths:
+        # Main build artifacts (dist directories)
+        - "packages/*/dist/**"
+        - "cli/*/dist/**"
+        - "npm/*/dist/**"
+        - "tooling/*/dist/**"
+        # Build directories
+        - "packages/*/build/**"
+        - "packages/example/build/**"
+        # Generated files
+        - "packages/*/src/generated/**"
+        - "packages/*/components.d.ts"
+        - "system-tests/lib/**"
+        # CLI build artifacts
+        - "cli/lib/**"
+        # Tooling artifacts
+        - "tooling/*/bin/**"
+        - "tooling/*/cache/**"

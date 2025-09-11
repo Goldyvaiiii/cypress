@@ -1,0 +1,9 @@
+steps:
+  - run: |
+      echo "SKIP_POST_INSTALL=true" >> $BASH_ENV
+  - node/install-packages:
+      pkg-manager: yarn
+      with-cache: true
+      cache-path: .yarn-cache
+  - run: |
+        yarn patch-package

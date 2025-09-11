@@ -21,16 +21,6 @@ for dir in ./.circleci/src/*/; do
       exit 1
     fi
     echo "  ✅ Packed ${output_file}"
-    
-    echo "  🔍 Validating ${output_file}"
-    if ! circleci config validate "$output_file"; then
-      echo "    ❌ Validating ${output_file} failed"
-      exit 1
-    fi
-    echo "    ✅ ${dirname}.yml configuration validated successfully"
-    
-    git add "$output_file"
-    echo "  📝 ${output_file} staged for commit"
   fi
 done
 

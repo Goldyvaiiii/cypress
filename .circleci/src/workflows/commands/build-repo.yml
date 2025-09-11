@@ -1,0 +1,7 @@
+steps:
+  - run:
+      name: Build
+      command: |
+        yarn gulp syncCloudValidations
+        yarn nx run-many --target=build --all --exclude=root
+        yarn nx run @packages/electron:build-binary

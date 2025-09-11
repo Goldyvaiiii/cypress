@@ -1922,7 +1922,8 @@ jobs:
       - run:
           command: |
             yarn nx run-many --target=lint --all --parallel
-          name: Lint
+            yarn workspace cypress dtslint
+          name: "Lint 🧹"
   node_modules_install:
     environment:
       CIRCLE_ARTIFACTS: /tmp/artifacts
