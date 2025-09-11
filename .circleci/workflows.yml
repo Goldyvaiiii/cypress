@@ -203,6 +203,14 @@ commands:
           paths:
             - cypress/cypress.tgz
           root: ~/
+  build-repo:
+    steps:
+      - run:
+          command: |
+            yarn gulp syncCloudValidations
+            yarn nx run-many --target=build --all --exclude=root
+            yarn nx run @packages/electron:build-binary
+          name: Build
   caching-dependency-installer:
     description: Installs & caches the dependencies based on yarn lock & package
       json dependencies
@@ -379,6 +387,11 @@ commands:
                   git checkout pr-<<parameters.pull_request_id>>
                 name: Check out PR <<parameters.pull_request_id>>
                 working_directory: /tmp/<<parameters.repo>>
+  ensure-typedefs:
+    steps:
+      - run:
+          command: yarn nx run-many --target=ci:ensure-typedefs --all --parallel
+          name: Ensure Type Definitions
   install-browsers:
     description: Install Google Chrome or Firefox
     parameters:
@@ -467,6 +480,16 @@ commands:
                   - browser-tools/install_chrome_for_testing:
                       install_chromedriver: false
                       version: << parameters.google-chrome-for-testing-version >>
+  install-packages:
+    steps:
+      - run: |
+          echo "SKIP_POST_INSTALL=true" >> $BASH_ENV
+      - node/install-packages:
+          cache-path: .yarn-cache
+          pkg-manager: yarn
+          with-cache: true
+      - run: |
+          yarn patch-package
   install-required-node:
     description: Install Node version matching .node-version
     steps:
@@ -539,6 +562,29 @@ commands:
                   mv ~/cypress/system-tests/node_modules /tmp/node_modules_cache/system-tests_node_modules
                   mv ~/cypress/globbed_node_modules /tmp/node_modules_cache/globbed_node_modules
                 name: Move to /tmp dir for consistent caching across root/non-root users
+  prepare-workspace:
+    steps:
+      - checkout
+      - run: |
+          yarn config set cache-folder .yarn-cache
+          yarn config set prefer-offline true
+      - install-packages
+      - build-repo
+      - persist_to_workspace:
+          paths:
+            - packages/*/dist/**
+            - cli/*/dist/**
+            - npm/*/dist/**
+            - tooling/*/dist/**
+            - packages/*/build/**
+            - packages/example/build/**
+            - packages/*/src/generated/**
+            - packages/*/components.d.ts
+            - system-tests/lib/**
+            - cli/lib/**
+            - tooling/*/bin/**
+            - tooling/*/cache/**
+          root: .
   restore_cached_binary:
     steps:
       - attach_workspace:
@@ -1332,12 +1378,7 @@ defaults:
       type: boolean
   working_directory: ~/cypress
 executors:
-  cy-doc:
-    docker:
-      - image: cypress/base-internal:22.15.1-bullseye
-    environment:
-      PLATFORM: linux
-    resource_class: medium
+  cy-doc: null
   darwin-amd64:
     environment:
       PLATFORM: darwin
@@ -1359,6 +1400,12 @@ executors:
     machine:
       image: ubuntu-2004:2024.11.1
     resource_class: arm.medium
+  linux-x64:
+    docker:
+      - image: cypress/base-internal:22.15.1-bullseye
+    environment:
+      PLATFORM: linux
+    resource_class: medium
   non-root-docker-user:
     docker:
       - image: cypress/base-internal:22.15.1-bullseye
@@ -1867,6 +1914,15 @@ jobs:
           command: yarn workspace cypress dtslint
           name: "Lint types 🧹"
     working_directory: ~/cypress
+  minimal-lint:
+    executor: linux-x64
+    steps:
+      - prepare-workspace
+      - ensure-typedefs
+      - run:
+          command: |
+            yarn nx run-many --target=lint --all --parallel
+          name: Lint
   node_modules_install:
     environment:
       CIRCLE_ARTIFACTS: /tmp/artifacts
@@ -3602,6 +3658,7 @@ jobs:
     working_directory: ~/cypress
 orbs:
   browser-tools: circleci/browser-tools@2.1.1
+  node: circleci/node@7.1.1
 version: 2.1
 workflows:
   darwin-arm64:
@@ -4702,6 +4759,7 @@ workflows:
         value: << pipeline.git.branch >>
   pull-request:
     jobs:
+      - minimal-lint
       - node_modules_install:
           build-better-sqlite3: true
       - build:
@@ -4709,10 +4767,6 @@ workflows:
           requires:
             - node_modules_install
       - check-ts:
-          requires:
-            - build
-      - lint:
-          name: linux-lint
           requires:
             - build
       - percy-finalize:
