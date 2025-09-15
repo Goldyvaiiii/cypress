@@ -1,5 +1,3 @@
-chrome-beta-version: 141.0.7390.16
-chrome-stable-version: 140.0.7339.127
 commands:
   build-and-package-binary:
     steps:
@@ -347,6 +345,8 @@ commands:
             yarn gulp e2eTestScaffold
             yarn check-binary-on-cdn --version $(node ./scripts/get-next-version.js) --type binary --file cypress.zip
           name: Check if binary exists, exit if it does
+  chrome-beta-version: 141.0.7390.16
+  chrome-stable-version: 140.0.7339.127
   clone-repo-and-checkout-branch:
     description: |
       Clones an external repo and then checks out the branch that matches the next version otherwise uses 'master' branch.
@@ -383,6 +383,7 @@ commands:
                   git checkout pr-<<parameters.pull_request_id>>
                 name: Check out PR <<parameters.pull_request_id>>
                 working_directory: /tmp/<<parameters.repo>>
+  firefox-stable-version: "142.0"
   install-browsers:
     description: Install Google Chrome or Firefox
     parameters:
@@ -1379,7 +1380,6 @@ executors:
       image: windows-server-2022-gui:stable
       shell: bash.exe -eo pipefail
     resource_class: windows.large
-firefox-stable-version: "142.0"
 jobs:
   binary-system-tests:
     environment:

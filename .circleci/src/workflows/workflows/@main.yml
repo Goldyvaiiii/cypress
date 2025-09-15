@@ -103,7 +103,7 @@ linux-x64:
           - system-tests-node-modules-install
     - system-tests-non-root:
         context: test-runner:performance-tracking
-        executor: non-root-docker-user
+        e: "non-root-docker-user"
         requires:
           - system-tests-node-modules-install
     - driver-integration-tests-chrome:
@@ -342,7 +342,7 @@ linux-x64:
         requires:
           - build
     - test-kitchensink-against-staging:
-        executor: kitchensink-executor
+        e: "kitchensink-executor"
         context: test-runner:record-tests
         filters: *mainBuildFilters
         requires:
@@ -403,7 +403,7 @@ linux-x64:
           - get-published-artifacts
     - test-binary-as-specific-user:
         name: "test binary as a non-root user"
-        executor: non-root-docker-user
+        e: "non-root-docker-user"
         context: publish-binary
         requires:
           - get-published-artifacts
@@ -515,7 +515,7 @@ linux-x64-contributor:
           - system-tests-node-modules-install
     - system-tests-non-root:
         context: test-runner:performance-tracking
-        executor: non-root-docker-user
+        e: "non-root-docker-user"
         requires:
           - system-tests-node-modules-install
     - driver-integration-tests-chrome:
@@ -732,7 +732,7 @@ linux-x64-contributor:
         requires:
           - build
     - test-kitchensink-against-staging:
-        executor: kitchensink-executor
+        e: "kitchensink-executor"
         context: test-runner:record-tests
         filters: *mainBuildFilters
         requires:
@@ -793,7 +793,7 @@ linux-x64-contributor:
           - get-published-artifacts
     - test-binary-as-specific-user:
         name: "test binary as a non-root user"
-        executor: non-root-docker-user
+        e: "non-root-docker-user"
         context: publish-binary
         requires:
           - get-published-artifacts
@@ -813,14 +813,14 @@ linux-arm64:
   jobs:
     - node_modules_install:
         name: linux-arm64-node-modules-install
-        executor: linux-arm64
+        e: "linux-arm64"
         resource_class: arm.medium
         only-cache-for-root-user: true
 
     - build:
         name: linux-arm64-build
         context: test-runner:env-canary
-        executor: linux-arm64
+        e: "linux-arm64"
         resource_class: arm.medium
         requires:
           - linux-arm64-node-modules-install
@@ -834,7 +834,7 @@ linux-arm64:
             test-runner:build-binary,
             publish-binary
           ]
-        executor: linux-arm64
+        e: "linux-arm64"
         resource_class: arm.medium
         requires:
           - linux-arm64-node-modules-install
@@ -848,23 +848,23 @@ linux-arm64:
     - get-published-artifacts:
         name: linux-arm64-get-published-artifacts
         context: [ publish-binary, test-runner:commit-status-checks ]
-        executor: linux-arm64
+        e: "linux-arm64"
         resource_class: arm.medium
         requires:
           - linux-arm64-wait-for-binary-publish
 
     - v8-integration-tests:
-        executor: linux-arm64
+        e: "linux-arm64"
         resource_class: arm.medium
         requires:
           - linux-arm64-build
     - driver-integration-memory-tests:
-        executor: linux-arm64
+        e: "linux-arm64"
         resource_class: arm.medium
         requires:
           - linux-arm64-build
     - server-unit-tests-cloud-environment:
-        executor: linux-arm64
+        e: "linux-arm64"
         resource_class: arm.medium
         requires:
           - linux-arm64-build
@@ -874,14 +874,14 @@ darwin-x64:
   jobs:
     - node_modules_install:
         name: darwin-x64-node-modules-install
-        executor: darwin-amd64
+        e: "darwin-amd64"
         resource_class: cypress-io/intel-macstadium
         only-cache-for-root-user: true
 
     - build:
         name: darwin-x64-build
         context: test-runner:env-canary
-        executor: darwin-amd64
+        e: "darwin-amd64"
         resource_class: cypress-io/intel-macstadium
         requires:
           - darwin-x64-node-modules-install
@@ -893,28 +893,28 @@ darwin-x64:
           - test-runner:upload
           - test-runner:commit-status-checks
           - test-runner:build-binary
-        executor: darwin-amd64
+        e: "darwin-amd64"
         resource_class: cypress-io/intel-macstadium
         requires:
           - darwin-x64-build
 
     - v8-integration-tests:
         name: darwin-x64-v8-integration-tests
-        executor: darwin-amd64
+        e: "darwin-amd64"
         resource_class: cypress-io/intel-macstadium
         requires:
           - darwin-x64-build
 
     - driver-integration-memory-tests:
         name: darwin-x64-driver-integration-memory-tests
-        executor: darwin-amd64
+        e: "darwin-amd64"
         resource_class: cypress-io/intel-macstadium
         requires:
           - darwin-x64-build
 
     - server-unit-tests-cloud-environment:
         name: darwin-x64-driver-server-unit-tests-cloud-environment
-        executor: darwin-amd64
+        e: "darwin-amd64"
         resource_class: cypress-io/intel-macstadium
         requires:
           - darwin-x64-build
@@ -924,14 +924,14 @@ darwin-arm64:
   jobs:
     - node_modules_install:
         name: darwin-arm64-node-modules-install
-        executor: darwin-arm64
+        e: "darwin-arm64"
         resource_class: cypress-io/m1-macstadium
         only-cache-for-root-user: true
 
     - build:
         name: darwin-arm64-build
         context: test-runner:env-canary
-        executor: darwin-arm64
+        e: "darwin-arm64"
         resource_class: cypress-io/m1-macstadium
         requires:
           - darwin-arm64-node-modules-install
@@ -943,26 +943,26 @@ darwin-arm64:
           - test-runner:upload
           - test-runner:commit-status-checks
           - test-runner:build-binary
-        executor: darwin-arm64
+        e: "darwin-arm64"
         resource_class: cypress-io/m1-macstadium
         requires:
           - darwin-arm64-build
 
     - v8-integration-tests:
         name: darwin-arm64-v8-integration-tests
-        executor: darwin-arm64
+        e: "darwin-arm64"
         resource_class: cypress-io/m1-macstadium
         requires:
           - darwin-arm64-build
     - driver-integration-memory-tests:
         name: darwin-arm64-driver-integration-memory-tests
-        executor: darwin-arm64
+        e: "darwin-arm64"
         resource_class: cypress-io/m1-macstadium
         requires:
           - darwin-arm64-build
     - server-unit-tests-cloud-environment:
         name: darwin-arm64-server-unit-tests-cloud-environment
-        executor: darwin-arm64
+        e: "darwin-arm64"
         resource_class: cypress-io/m1-macstadium
         requires:
           - darwin-arm64-build
@@ -972,21 +972,21 @@ windows:
   jobs:
     - node_modules_install:
         name: windows-node-modules-install
-        executor: windows
+        e: "windows"
         resource_class: windows.medium
         only-cache-for-root-user: true
 
     - build:
         name: windows-build
         context: test-runner:env-canary
-        executor: windows
+        e: "windows"
         resource_class: windows.large
         requires:
           - windows-node-modules-install
 
     - run-app-integration-tests-chrome:
         name: windows-run-app-integration-tests-chrome
-        executor: windows
+        e: "windows"
         resource_class: windows.large
         context: [ test-runner:cypress-record-key, test-runner:launchpad-tests ]
         requires:
@@ -994,7 +994,7 @@ windows:
 
     - run-launchpad-integration-tests-chrome:
         name: windows-run-launchpad-integration-tests-chrome
-        executor: windows
+        e: "windows"
         resource_class: windows.large
         context: [ test-runner:cypress-record-key, test-runner:launchpad-tests ]
         requires:
@@ -1002,21 +1002,21 @@ windows:
 
     - unit-tests:
         name: windows-unit-tests
-        executor: windows
+        e: "windows"
         resource_class: windows.medium
         requires:
           - windows-build
 
     - server-unit-tests-cloud-environment:
         name: windows-server-unit-tests-cloud-environment
-        executor: windows
+        e: "windows"
         resource_class: windows.medium
         requires:
           - windows-build
 
     - create-build-artifacts:
         name: windows-create-build-artifacts
-        executor: windows
+        e: "windows"
         resource_class: windows.large
         context:
           - test-runner:sign-windows-binary
@@ -1028,19 +1028,19 @@ windows:
 
     - test-binary-against-kitchensink-chrome:
         name: windows-test-binary-against-kitchensink-chrome
-        executor: windows
+        e: "windows"
         requires:
           - windows-create-build-artifacts
 
     - v8-integration-tests:
         name: windows-v8-integration-tests
-        executor: windows
+        e: "windows"
         resource_class: windows.medium
         requires:
           - windows-build
     - driver-integration-memory-tests:
         name: windows-driver-integration-memory-tests
-        executor: windows
+        e: "windows"
         resource_class: windows.medium
         requires:
           - windows-build
