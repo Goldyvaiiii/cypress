@@ -13,6 +13,7 @@ when:
         matches:
             pattern: /^pull\/[0-9]+/
             value: << pipeline.git.branch >>
+    - not: << pipeline.parameters.run_full_pipeline >>
 
 jobs:
   - node_modules_install:

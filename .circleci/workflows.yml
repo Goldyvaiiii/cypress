@@ -865,13 +865,27 @@ commands:
           path: <<parameters.testResultsPath>>
   setup_should_persist_artifacts:
     steps:
-      - run:
-          command: |
-            echo "Setting SHOULD_PERSIST_ARTIFACTS variable"
-            echo 'if ! [[ "$CIRCLE_BRANCH" != "develop" && "$CIRCLE_BRANCH" != "release/"* && "$CIRCLE_BRANCH" != "chore/refactor_cli_to_ts" ]]; then
-                export SHOULD_PERSIST_ARTIFACTS=true
-            fi' >> "$BASH_ENV"
-          name: Set environment variable to determine whether or not to persist artifacts
+      - when:
+          condition:
+            or:
+              - equal:
+                  - << pipeline.parameters.persist_artifacts >>
+                  - true
+              - equal:
+                  - develop
+                  - << pipeline.git.branch >>
+              - equal:
+                  - update-v8-snapshot-cache-on-develop
+                  - << pipeline.git.branch >>
+              - matches:
+                  pattern: /^release\/\d+\.\d+\.\d+$/
+                  value: << pipeline.git.branch >>
+          steps:
+            - run:
+                command: |
+                  echo "Setting SHOULD_PERSIST_ARTIFACTS variable"
+                  echo 'export SHOULD_PERSIST_ARTIFACTS=true\n' >> "$BASH_ENV"
+                name: Set environment variable to determine whether or not to persist artifacts
   test-binary-against-repo:
     description: |
       Takes the built binary and NPM package, clones given example repo
@@ -2013,7 +2027,6 @@ jobs:
       - run: yarn workspace @cypress/grep omit:specs
       - run: yarn workspace @cypress/grep or
       - run: yarn workspace @cypress/grep skip
-      - run: yarn workspace @cypress/grep tags
       - run: yarn workspace @cypress/grep tags:inverted
       - run: yarn workspace @cypress/grep tags:and
       - run: yarn workspace @cypress/grep tags:and:not
@@ -3663,6 +3676,13 @@ jobs:
     working_directory: ~/cypress
 orbs:
   browser-tools: circleci/browser-tools@2.1.1
+parameters:
+  persist_artifacts:
+    default: false
+    type: boolean
+  run_full_pipeline:
+    default: false
+    type: boolean
 ubuntu-2004-current: ubuntu-2004:2024.11.1
 ubuntu-2004-older: ubuntu-2004:2024.05.1
 version: 2.1
@@ -3721,6 +3741,9 @@ workflows:
         - matches:
             pattern: /^release\/\d+\.\d+\.\d+$/
             value: << pipeline.git.branch >>
+        - equal:
+            - << pipeline.parameters.run_full_pipeline >>
+            - true
   darwin-x64:
     jobs:
       - node_modules_install:
@@ -3775,6 +3798,9 @@ workflows:
         - matches:
             pattern: /^release\/\d+\.\d+\.\d+$/
             value: << pipeline.git.branch >>
+        - equal:
+            - << pipeline.parameters.run_full_pipeline >>
+            - true
   linux-arm64:
     jobs:
       - node_modules_install:
@@ -3840,6 +3866,9 @@ workflows:
         - matches:
             pattern: /^release\/\d+\.\d+\.\d+$/
             value: << pipeline.git.branch >>
+        - equal:
+            - << pipeline.parameters.run_full_pipeline >>
+            - true
   linux-x64:
     jobs:
       - node_modules_install:
@@ -4325,6 +4354,9 @@ workflows:
         - matches:
             pattern: /^release\/\d+\.\d+\.\d+$/
             value: << pipeline.git.branch >>
+        - equal:
+            - << pipeline.parameters.run_full_pipeline >>
+            - true
   linux-x64-contributor:
     jobs:
       - node_modules_install
@@ -5077,6 +5109,7 @@ workflows:
             matches:
               pattern: /^pull\/[0-9]+/
               value: << pipeline.git.branch >>
+        - not: << pipeline.parameters.run_full_pipeline >>
   windows:
     jobs:
       - node_modules_install:
@@ -5160,3 +5193,6 @@ workflows:
         - matches:
             pattern: /^release\/\d+\.\d+\.\d+$/
             value: << pipeline.git.branch >>
+        - equal:
+            - << pipeline.parameters.run_full_pipeline >>
+            - true

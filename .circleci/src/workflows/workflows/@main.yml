@@ -1,5 +1,7 @@
 
 
+
+
 linux-x64:
   when: &full-workflow-filters
     or:
@@ -9,6 +11,7 @@ linux-x64:
       - matches:
           pattern: /^release\/\d+\.\d+\.\d+$/
           value: << pipeline.git.branch >>
+      - equal: [ << pipeline.parameters.run_full_pipeline >>, true ]
   jobs:
     - node_modules_install:
         build-better-sqlite3: true

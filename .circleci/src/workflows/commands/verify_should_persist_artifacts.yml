@@ -1,0 +1,8 @@
+steps:
+  - run:
+      name: Check current branch to persist artifacts
+      command: |
+        if [[ -z "$SHOULD_PERSIST_ARTIFACTS" ]]; then
+          echo "Not uploading artifacts or posting install comment for this branch."
+          circleci-agent step halt
+        fi
