@@ -41,7 +41,6 @@ export type LocalBusEmitsMap = {
   // Studio Events
   'studio:save': StudioSavePayload
   'studio:cancel': undefined
-  'studio:copy:to:clipboard': () => void
   'studio:init:suite': { suiteId: string, showUrlPrompt?: boolean }
 
   // Reporter Events

@@ -325,14 +325,6 @@ export class EventManager {
       this.studioStore.startSave()
     })
 
-    this.reporterBus.on('studio:copy:to:clipboard', (cb) => {
-      this._studioCopyToClipboard(cb)
-    })
-
-    this.localBus.on('studio:copy:to:clipboard', (cb) => {
-      this._studioCopyToClipboard(cb)
-    })
-
     this.localBus.on('studio:save', (saveInfo) => {
       this.ws.emit('studio:save', saveInfo, (err) => {
         if (err) {
@@ -581,8 +573,6 @@ export class EventManager {
 
       const displayProps = Cypress.runner.getDisplayPropsForLog(log)
 
-      this._interceptStudio(displayProps)
-
       this.reporterBus.emit('reporter:log:add', displayProps)
     })
 
@@ -593,8 +583,6 @@ export class EventManager {
       }
 
       const displayProps = Cypress.runner.getDisplayPropsForLog(log)
-
-      this._interceptStudio(displayProps)
 
       this.reporterBus.emit('reporter:log:state:changed', displayProps)
     })
@@ -943,27 +931,6 @@ export class EventManager {
     Cypress.removeAllListeners()
 
     this.localBus.emit('restart')
-  }
-
-  _interceptStudio (displayProps) {
-    // Only intercept logs when Studio is actually recording a specific test
-    // Don't intercept when Studio is just open in "new test" mode
-    if (this.studioStore.isActive && this.studioStore.testId) {
-      displayProps.hookId = this.studioStore.hookId
-
-      if (displayProps.name === 'visit' && displayProps.state === 'failed') {
-        this.studioStore.testFailed()
-        this.reporterBus.emit('test:set:state', this.studioStore.testError, noop)
-      }
-    }
-
-    return displayProps
-  }
-  _studioCopyToClipboard (cb) {
-    this.ws.emit('studio:get:commands:text', this.studioStore.logs, async (commandsText) => {
-      await this.studioStore.copyToClipboard(commandsText)
-      cb()
-    })
   }
 
   emit<K extends Extract<keyof LocalBusEmitsMap, string>>(k: K, v: LocalBusEmitsMap[K]): void
