@@ -4,9 +4,10 @@ import $document from './document'
 import $elements from './elements'
 import $coordinates from './coordinates'
 import * as $transform from './transform'
-
+import { BodyOrHtml } from './visibility/BodyOrHtml'
+import { checkIsHidden } from './visibility/checkIsHidden'
 const { isElement, isBody, isHTML, isOption, isOptgroup, getParent, getFirstParentWithTagName, isAncestor, isChild, getAllParents, isDescendent, isUndefinedOrHTMLBodyDoc, elOrAncestorIsFixedOrSticky, isDetached, isFocusable, stringify: stringifyElement } = $elements
-
+import { SelectChildren } from './visibility/SelectChildren'
 const fixedOrAbsoluteRe = /(fixed|absolute)/
 
 const OVERFLOW_PROPS = ['hidden', 'clip', 'scroll', 'auto']
@@ -48,28 +49,17 @@ const getFirstSelectParentFromEl = ($el: JQuery) => {
   return null
 }
 
-const isStrictlyHidden = (el: HTMLElement, methodName = 'isStrictlyHidden()', options = { checkOpacity: true }, recurse?) => {
+const isStrictlyHidden = (el: JQuery<HTMLElement>, methodName = 'isStrictlyHidden()', options = { checkOpacity: true }, recurse?) => {
   ensureEl(el, methodName)
   const $el = $jquery.wrap(el)
 
-  // the body and html are always visible
-  if (isBody(el) || isHTML(el)) {
-    return false // is visible
-  }
+  const checked = checkIsHidden($el, [
+    BodyOrHtml,
+    SelectChildren,
+  ], (e) => isStrictlyHidden(e, methodName, options, recurse))
 
-  // an option is considered visible if its parent select is visible
-  if (isOption(el) || isOptgroup(el)) {
-    // they could have just set to hide the option
-    if (elHasDisplayNone($el)) {
-      return true
-    }
-
-    // if its parent select is visible, then it's not hidden
-    const $select = getFirstSelectParentFromEl($el)
-
-    if ($select) {
-      return recurse ? recurse($select[0], methodName, options) : isStrictlyHidden($select[0], methodName, options)
-    }
+  if (checked !== undefined) {
+    return checked
   }
 
   // in Cypress-land we consider the element hidden if
