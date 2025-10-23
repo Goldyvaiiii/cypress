@@ -3,6 +3,8 @@ import { VisibilityCheck } from './VisibilityCheck'
 
 export const BasicVisibility: VisibilityCheck = {
   when: ({ tagName }) => {
+    // <option> and <optgroup> are special cases where we delegate to the
+    // parent select in certain cases
     return tagName !== 'OPTION' && tagName !== 'OPTGROUP'
   },
   isHidden: (el) => {
