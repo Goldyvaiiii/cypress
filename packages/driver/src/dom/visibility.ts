@@ -6,10 +6,10 @@ import $coordinates from './coordinates'
 import * as $transform from './transform'
 import { BodyOrHtml } from './visibility/BodyOrHtml'
 import { checkIsHidden } from './visibility/checkIsHidden'
-const { isElement, isBody, isHTML, isOption, isOptgroup, getParent, getFirstParentWithTagName, isAncestor, isChild, getAllParents, isDescendent, isUndefinedOrHTMLBodyDoc, elOrAncestorIsFixedOrSticky, isDetached, isFocusable, stringify: stringifyElement } = $elements
+const { isElement, isOption, isOptgroup, getParent, getFirstParentWithTagName, isAncestor, isChild, getAllParents, isDescendent, isUndefinedOrHTMLBodyDoc, elOrAncestorIsFixedOrSticky, isDetached, isFocusable, stringify: stringifyElement } = $elements
 import { SelectChildren } from './visibility/SelectChildren'
 const fixedOrAbsoluteRe = /(fixed|absolute)/
-
+import { BasicVisibility } from './visibility/BasicVisibility'
 const OVERFLOW_PROPS = ['hidden', 'clip', 'scroll', 'auto']
 
 const isVisible = (el) => {
@@ -56,6 +56,8 @@ const isStrictlyHidden = (el: JQuery<HTMLElement>, methodName = 'isStrictlyHidde
   const checked = checkIsHidden($el, [
     BodyOrHtml,
     SelectChildren,
+    BasicVisibility,
+    //NilDimension,
   ], (e) => isStrictlyHidden(e, methodName, options, recurse))
 
   if (checked !== undefined) {
@@ -65,6 +67,7 @@ const isStrictlyHidden = (el: JQuery<HTMLElement>, methodName = 'isStrictlyHidde
   // in Cypress-land we consider the element hidden if
   // either its clientHeight or clientWidth is 0 because
   // it is impossible for the user to interact with this element
+
   if (elHasNoEffectiveWidthOrHeight($el)) {
     // https://github.com/cypress-io/cypress/issues/6183
     if (elHasDisplayInline($el)) {

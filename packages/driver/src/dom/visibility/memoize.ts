@@ -8,7 +8,6 @@ export function isMemoized (subject: any): subject is Memoized<HTMLElement> {
 
 export function memoize <T extends object> (
   obj: T,
-  props: (keyof T)[],
   ttl: number = 100,
 ): Memoized<T> {
   const memoStore = new Map<{ value, args }, {
@@ -16,14 +15,14 @@ export function memoize <T extends object> (
     timestamp: Date
   }>()
 
-  function memoFn (fn: Function, receiver, args: any[]) {
+  function memoFn (receiver, fn: Function, args: any[]) {
     const memo = memoStore.get({ value: fn, args })
 
     if (memo && memo.timestamp.getTime() + ttl > Date.now()) {
       return memo.result
     }
 
-    const result = fn.apply(receiver, args)
+    const result = fn.call(receiver, ...args)
 
     memoStore.set({ value: fn, args }, { result, timestamp: new Date() })
 
@@ -52,19 +51,17 @@ export function memoize <T extends object> (
         return true
       }
 
-      if (props.includes(prop as keyof T)) {
-        if (value instanceof Function) {
-          return function (...args: Parameters<typeof value>) {
-            return memoFn(value, receiver, args)
-          }
-        }
-
-        if (target.hasOwnProperty(prop)) {
-          return memoProp(prop as keyof T)
+      if (typeof value === 'function') {
+        return function (...args: Parameters<typeof value>) {
+          return memoFn(this === receiver ? target : this, value, args)
         }
       }
 
-      return target[prop]
+      if (prop in target) {
+        return memoProp(prop as keyof T)
+      }
+
+      return Reflect.get(target, prop, receiver)
     },
   }) as Memoized<T>
 }
