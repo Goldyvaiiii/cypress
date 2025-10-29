@@ -22,11 +22,6 @@ export type InjectionOpts = {
   shouldInjectDocumentDomain: boolean
 }
 
-const doctypeRe = /<\!doctype.*?>/i
-const headRe = /<head(?!er).*?>/i
-const bodyRe = /<body.*?>/i
-const htmlRe = /<html.*?>/i
-
 function getRewriter (useAstSourceRewriting: boolean) {
   return useAstSourceRewriting ? astRewriter : regexRewriter
 }
@@ -66,18 +61,6 @@ function getHtmlToInject (opts: InjectionOpts & SecurityOpts) {
   }
 }
 
-const insertBefore = (originalString, match, stringToInsert) => {
-  const index = match.index || 0
-
-  return `${originalString.slice(0, index)}${stringToInsert} ${originalString.slice(index)}`
-}
-
-const insertAfter = (originalString, match, stringToInsert) => {
-  const index = (match.index || 0) + match[0].length
-
-  return `${originalString.slice(0, index)} ${stringToInsert}${originalString.slice(index)}`
-}
-
 export async function html (html: string, opts: SecurityOpts & InjectionOpts) {
   const htmlToInject = await Promise.resolve(getHtmlToInject(opts))
 
@@ -91,32 +74,31 @@ export async function html (html: string, opts: SecurityOpts & InjectionOpts) {
     return html
   }
 
-  // TODO: move this into regex-rewriting and have ast-rewriting handle this in its own way
+  const head = /(<head[^>]*>)([\s\S]*?)(<\/head>)/i
 
-  const headMatch = html.match(headRe)
-
-  if (headMatch) {
-    return insertAfter(html, headMatch, htmlToInject)
+  if (html.match(head)) {
+    return html.replace(head, `$1$2${htmlToInject}$3`)
   }
 
-  const bodyMatch = html.match(bodyRe)
+  const body = /(<body[^>]*>)([\s\S]*?)(<\/body>)/i
 
-  if (bodyMatch) {
-    return insertBefore(html, bodyMatch, `<head> ${htmlToInject} </head>`)
+  if (html.match(body)) {
+    return html.replace(body, `$1<head>${htmlToInject}</head>$2$3`)
   }
 
-  const htmlMatch = html.match(htmlRe)
+  const htmlEl = /(<html[^>]*>)([\s\S]*?)(<\/html>)/i
 
-  if (htmlMatch) {
-    return insertAfter(html, htmlMatch, `<head> ${htmlToInject} </head>`)
+  if (html.match(htmlEl)) {
+    return html.replace(htmlEl, `$1<head>${htmlToInject}</head>$2$3`)
   }
 
-  // if only <!DOCTYPE> content, inject <head> after doctype
-  if (doctypeRe.test(html)) {
-    return `${html}<head> ${htmlToInject} </head>`
+  const doctype = /(<\!doctype.*?>)/i
+
+  if (html.match(doctype)) {
+    return html.replace(doctype, `$1<head>${htmlToInject}</head>`)
   }
 
-  return `<head> ${htmlToInject} </head>${html}`
+  return `<head>${htmlToInject}</head>${html}`
 }
 
 export function security (opts: SecurityOpts) {
