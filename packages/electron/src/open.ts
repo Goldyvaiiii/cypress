@@ -8,6 +8,8 @@ import { ChildProcess, spawn } from 'child_process'
 import Debug from 'debug'
 import os from 'os'
 
+const debug = Debug('cypress:electron:open')
+
 function getInspectFromUrl (url: string): string {
   const flag = process.execArgv.some((f) => f === '--inspect' || f.startsWith('--inspect=')) ? '--inspect' : '--inspect-brk'
   const port = process.debugPort + 1
@@ -98,8 +100,15 @@ export async function open (appPath: string, argv: string[]): Promise<ChildProce
       debugElectron.enabled ||
       (process.env.CYPRESS_INTERNAL_ENV ?? '') === 'development'
     ) {
+      debug('piping stderr to process stderr without filtering due to one of the following conditions', {
+        electronLoggingEnabled: process.env.ELECTRON_ENABLE_LOGGING,
+        electronDebugEnabled: debugElectron.enabled,
+        cypressInternalEnvIsDevelopment: process.env.CYPRESS_INTERNAL_ENV,
+      })
+
       spawned.stderr.pipe(process.stderr)
     } else {
+      debug('filtering stderr with debug prefix', DEBUG_PREFIX)
       spawned.stderr.pipe(filter(process.stderr, debugStderr, DEBUG_PREFIX))
     }
 

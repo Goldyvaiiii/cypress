@@ -4,6 +4,7 @@ import { LineDecoder } from './LineDecoder'
 import Debug from 'debug'
 import { writeWithBackpressure } from './writeWithBackpressure'
 const debugVerbose = Debug('cypress-verbose:stderr-filtering:FilterTaggedContent')
+const debug = Debug('cypress:stderr-filtering:FilterTaggedContent')
 
 /**
  * Filters content based on start and end tags, supporting multi-line tagged content.
@@ -32,6 +33,7 @@ export class FilterTaggedContent extends Transform {
    * @param filtered The writable stream for filtered content
    */
   constructor (private startTag: string, private endTag: string, private wasteStream: Writable) {
+    debug('FilterTaggedContent constructor', new Error().stack)
     super({
       transform: (chunk, encoding, next) => this.transform(chunk, encoding, next),
       flush: (callback) => this.flush(callback),

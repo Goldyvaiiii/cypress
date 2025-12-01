@@ -30,7 +30,7 @@ export class TagStream extends Transform {
   decoder?: StringDecoder
 
   private get initializedDecoder () {
-    debug('initializedDecoder', !!this.decoder)
+    debug('initializedDecoder', !!this.decoder, new Error().stack)
     if (!this.decoder) {
       this.decoder = new StringDecoder()
     }
@@ -45,6 +45,7 @@ export class TagStream extends Transform {
    * @param endTag - The tag to append to each chunk. Defaults to END_TAG.
    */
   constructor (private startTag: string = START_TAG, private endTag: string = END_TAG) {
+    debug('constructor', new Error().stack)
     super({
       transform: (...args) => this.transform(...args),
     })
