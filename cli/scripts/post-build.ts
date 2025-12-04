@@ -12,6 +12,7 @@ const npmModulesToCopy: string[] = [
   'vue',
   'angular',
   'svelte',
+  'stderr-filtering',
 ]
 
 npmModulesToCopy.forEach((folder: string) => {

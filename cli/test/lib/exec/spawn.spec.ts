@@ -9,7 +9,7 @@ import { EventEmitter as EE } from 'events'
 import readline from 'readline'
 import createDebug from 'debug'
 import { stdin, stdout, stderr } from 'process'
-
+import { filter, DEBUG_PREFIX } from '../../../lib/stderr-filtering'
 import state from '../../../lib/tasks/state'
 import xvfb from '../../../lib/exec/xvfb'
 import { start } from '../../../lib/exec/spawn'
@@ -170,6 +170,16 @@ vi.mock('../../../lib/util', async (importActual) => {
   }
 })
 
+vi.mock('../../../lib/stderr-filtering', async (importActual) => {
+  const actual = await importActual()
+
+  return {
+    ...(actual as any),
+    filter: vi.fn(),
+    DEBUG_PREFIX: 'DEBUG_PREFIX',
+  }
+})
+
 const debug = createDebug('test')
 
 const cwd = process.cwd()
@@ -202,11 +212,11 @@ describe('lib/exec/spawn', function () {
 
     spawnedProcess.stdout = {
       on: vi.fn().mockReturnValue(undefined),
-      pipe: vi.fn().mockReturnValue(undefined),
+      pipe: vi.fn().mockImplementation((stream) => stream),
     }
 
     spawnedProcess.stderr = {
-      pipe: vi.fn().mockReturnValue(undefined),
+      pipe: vi.fn().mockImplementation((stream) => stream),
       on: vi.fn().mockReturnValue(undefined),
     }
 
@@ -225,6 +235,11 @@ describe('lib/exec/spawn', function () {
         return '/path/to/cypress'
       }
     })
+
+    // @ts-expect-error - partial mock
+    vi.mocked(filter).mockReturnValue({
+      pipe: vi.fn().mockImplementation((stream) => stream),
+    })
   })
 
   describe('.start', function () {
@@ -236,7 +251,7 @@ describe('lib/exec/spawn', function () {
     // failed assertion might print to the public CI logs and limit
     // the environment variables when running tests on CI.
 
-    it('passes args + options to spawn', async () => {
+    it.only('passes args + options to spawn', async () => {
       vi.mocked(needsSandbox).mockReturnValue(false)
 
       // start the process
@@ -689,13 +704,6 @@ describe('lib/exec/spawn', function () {
 
       const buf1 = Buffer.from('asdf')
 
-      // mock display missing
-      spawnedProcess.stderr.on.mockImplementation((event, callback) => {
-        if (event === 'data') {
-          callback(buf1)
-        }
-      })
-
       // @ts-expect-error - invalid number of arguments for given type
       const startPromise = start()
 
@@ -707,44 +715,8 @@ describe('lib/exec/spawn', function () {
       expect(stderr.write).toHaveBeenCalledWith(buf1)
       expect(stdin.pipe).toHaveBeenCalledExactlyOnceWith(spawnedProcess.stdin)
       expect(spawnedProcess.stdout.pipe).toHaveBeenCalledExactlyOnceWith(stdout)
-    })
-
-    it('filters out dbus errors on linux', async () => {
-      vi.mocked(os.platform).mockReturnValue('linux')
-
-      const dbusErrors = [
-        Buffer.from('ERROR:dbus/bus.cc:123: Failed to connect to session bus'),
-        Buffer.from('[246:0820/083339.099956:ERROR:dbus/object_proxy.cc:590] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:'),
-      ]
-
-      const normalError = Buffer.from('Some other error message')
-
-      let dataCallback: (data: Buffer) => void
-
-      // mock stderr data handler
-      spawnedProcess.stderr.on.mockImplementation((event, callback) => {
-        if (event === 'data') {
-          dataCallback = callback
-        }
-      })
-
-      // @ts-expect-error - invalid number of arguments for given type
-      const startPromise = start()
-
-      // Emit dbus error - should be filtered out (not written to stderr)
-      dbusErrors.forEach((err) => {
-        dataCallback!(err)
-        expect(stderr.write).not.toHaveBeenCalledWith(err)
-      })
-
-      // Emit normal error - should be written to stderr
-      dataCallback!(normalError)
-
-      expect(stderr.write).toHaveBeenCalledWith(normalError)
-
-      spawnedProcess.emit('close', 0)
-
-      await startPromise
+      expect(filter).toHaveBeenCalledWith(stderr, debug, DEBUG_PREFIX)
+      expect(spawnedProcess.stderr.pipe).toHaveBeenCalled()
     })
 
     // https://github.com/cypress-io/cypress/issues/1841

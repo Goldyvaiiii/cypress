@@ -29,6 +29,8 @@ import { telemetry } from '@packages/telemetry'
 import { CypressRunResult, createPublicBrowser, createPublicConfig, createPublicRunResults, createPublicSpec, createPublicSpecResults } from './results'
 import { EarlyExitTerminator } from '../util/graceful_crash_handling'
 import type { CypressError } from '@packages/errors'
+import { filter, DEBUG_PREFIX } from '@packages/stderr-filtering'
+import Debug from 'debug'
 
 type SetScreenshotMetadata = (data: TakeScreenshotProps) => void
 export type ScreenshotMetadata = ReturnType<typeof screenshotMetadata>
@@ -1201,7 +1203,7 @@ export async function run (options, loading: Promise<void>) {
     // tslint:disable-next-line no-implicit-dependencies - electron dep needs to be defined
     const app = require('electron').app
 
-    // electron >= 5.0.0 will exit the app if all browserwindows are closed,
+    // electron >= 5.0.0 will exit the app if all browser windows are closed,
     // this is obviously undesirable in run mode
     // https://github.com/cypress-io/cypress/pull/4720#issuecomment-514316695
     app.on('window-all-closed', () => {

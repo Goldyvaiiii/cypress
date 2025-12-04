@@ -11,10 +11,10 @@ import { needsSandbox } from '../tasks/verify'
 import { throwFormErrorText, getError, errors } from '../errors'
 import readline from 'readline'
 import { stdin, stdout, stderr } from 'process'
+import { filter, DEBUG_PREFIX } from '../stderr-filtering'
+import { Transform } from 'stream'
 
 const debug = Debug('cypress:cli')
-
-const DBUS_ERROR_PATTERN = /ERROR:dbus\/(bus|object_proxy)\.cc/
 
 function isPlatform (platform: string): boolean {
   return os.platform() === platform
@@ -182,22 +182,42 @@ function createSpawnFunction (
       // to filter out the garbage
       if (child.stderr) {
         debug('piping child STDERR to process STDERR')
-        child.stderr.on('data', (data: any) => {
-          const str = data.toString()
 
-          // if we have a callback and this explicitly returns
-          // false then bail
-          if (onStderrData && onStderrData(str)) {
-            return
-          }
+        const customFilter = new Transform({
+          transform (chunk, encoding, next) {
+            const str = chunk.toString()
 
-          if (str.match(DBUS_ERROR_PATTERN)) {
-            debug(str)
-          } else {
-          // else pass it along!
-            stderr.write(data)
-          }
+            if (!(onStderrData && onStderrData(str))) {
+              this.push(chunk)
+            }
+
+            next()
+          },
         })
+
+        // Only filter if electron logging is not explicitly enabled
+        // This matches the behavior in packages/electron/src/open.ts
+        const debugElectron = Debug('cypress:electron')
+        const shouldFilter = (
+          (process.env.ELECTRON_ENABLE_LOGGING ?? '') !== '1' &&
+          !debugElectron.enabled &&
+          (process.env.CYPRESS_INTERNAL_ENV ?? '') !== 'development'
+        )
+
+        if (shouldFilter) {
+          debug('filtering stderr with debug prefix', DEBUG_PREFIX)
+          const withCustomFilter = child.stderr.pipe(customFilter)
+
+          withCustomFilter.pipe(filter(process.stderr, debug, DEBUG_PREFIX))
+        } else {
+          debug('piping stderr to process stderr without stderr filtering due to one of the following conditions', {
+            electronLoggingEnabled: process.env.ELECTRON_ENABLE_LOGGING,
+            electronDebugEnabled: debugElectron.enabled,
+            cypressInternalEnvIsDevelopment: process.env.CYPRESS_INTERNAL_ENV,
+          })
+
+          child.stderr.pipe(customFilter).pipe(stderr)
+        }
       }
 
       // https://github.com/cypress-io/cypress/issues/1841
@@ -254,27 +274,15 @@ async function userFriendlySpawn (spawn: ReturnType<typeof createSpawnFunction>,
     })
   }
 
-  try {
-    const code: number = await spawn(overrides)
+  const code: number = await spawn(overrides)
 
-    if (code !== 0 && brokenGtkDisplay) {
-      util.logBrokenGtkDisplayWarning()
+  if (code !== 0 && brokenGtkDisplay) {
+    util.logBrokenGtkDisplayWarning()
 
-      return spawnInXvfb(spawn)
-    }
-
-    return code
-  } catch (error: any) {
-    // we can format and handle an error message from the code above
-    // prevent wrapping error again by using "known: undefined" filter
-    if ((error as any).known === undefined) {
-      const raiseErrorFn = throwFormErrorText(errors.unexpected)
-
-      await raiseErrorFn(error.message)
-    }
-
-    throw error
+    return spawnInXvfb(spawn)
   }
+
+  return code
 }
 
 interface StartOptions {
