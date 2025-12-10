@@ -178,7 +178,8 @@
       }
     },
     "implicitDependencies": [
-      "@cypress/*"
+      "@cypress/*",
+      "@packages/stderr-filtering"
     ]
   }
 }
