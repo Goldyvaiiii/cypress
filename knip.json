@@ -19,6 +19,10 @@
         "lib/**/*.{ts,js}",
         "scripts/**/*.{ts,js}",
         "types/**/*.ts"
+      ],
+      "ignoreDependencies": [
+        "buffer",
+        "process"
       ]
     },
     "packages/app": {
@@ -71,6 +75,9 @@
       "project": [
         "lib/**/*.{ts,tsx,js,jsx}",
         "*.{ts,tsx,js,jsx}"
+      ],
+      "ignoreDependencies": [
+        "tslib"
       ]
     },
     "packages/launchpad": {
@@ -112,6 +119,9 @@
     "packages/ts": {
       "project": [
         "*.{ts,tsx,js,jsx}"
+      ],
+      "ignoreDependencies": [
+        "typescript-cached-transpile"
       ]
     },
     "packages/extension": {
@@ -147,6 +157,11 @@
     "packages/config": {
       "project": [
         "src/**/*.{ts,tsx,js,jsx}"
+      ],
+      "ignoreDependencies": [
+        "@babel/parser",
+        "@babel/plugin-syntax-typescript",
+        "@babel/plugin-transform-typescript"
       ]
     },
     "packages/driver": {
@@ -183,6 +198,7 @@
     "packages/data-context": {
       "project": [
         "src/**/*.{ts,tsx,js,jsx}",
+        "graphql/**/*.{ts,tsx,js,jsx}",
         "*.{ts,tsx,js,jsx}"
       ]
     },
@@ -234,6 +250,11 @@
       ],
       "project": [
         "lib/**/*.{ts,tsx,js,jsx}"
+      ],
+      "ignoreDependencies": [
+        "engine.io",
+        "engine.io-client",
+        "flatted"
       ]
     },
     "packages/packherd-require": {
@@ -330,6 +351,13 @@
       "project": [
         "**/*.{ts,tsx,js,jsx}",
         "*.{ts,tsx,js,jsx}"
+      ],
+      "ignoreDependencies": [
+        "buffer",
+        "process",
+        "@babel/plugin-transform-class-properties",
+        "@babel/plugin-transform-object-rest-spread",
+        "babel-plugin-add-module-exports"
       ]
     },
     "npm/webpack-preprocessor": {
@@ -398,11 +426,16 @@
     },
     "tooling/v8-snapshot": {
       "entry": [
+        "src/v8-snapshot.ts",
+        "src/setup/index.ts",
         "src/generator/blueprint.ts",
         "src/blueprint/**/*.js"
       ],
       "project": [
         "src/**/*.{ts,tsx,js,jsx}"
+      ],
+      "ignoreDependencies": [
+        "tslib"
       ]
     },
     "tooling/electron-mksnapshot": {
@@ -492,7 +525,8 @@
     "@percy/cypress",
     "@vue/compiler-core",
     "@vue/compiler-dom",
-    "@vue/compiler-sfc"
+    "@vue/compiler-sfc",
+    "edgedriver"
   ],
   "ignoreBinaries": [
     "circleci",
