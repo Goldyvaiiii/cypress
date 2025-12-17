@@ -13,7 +13,6 @@ const npmModulesToCopy: string[] = [
   'angular',
   'angular-zoneless',
   'svelte',
-  'stderr-filtering',
 ]
 
 npmModulesToCopy.forEach((folder: string) => {
