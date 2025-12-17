@@ -22,6 +22,10 @@ includeTypes.forEach((folder: string) => {
   shell.cp('-R', source, 'build/types')
 })
 
+// copy the stderr-filtering package before TypeScript compilation
+// since lib/exec/spawn.ts imports from '../stderr-filtering'
+shell.cp('-R', '../packages/stderr-filtering/dist', 'lib/stderr-filtering')
+
 // build the project and copy the build files over to the build directory
 shell.exec('tsc -p tsconfig.build.json')
 shell.exec('tsc -p tsconfig.esm.json')
@@ -40,6 +44,3 @@ shell.mkdir('-p', 'build/dist/bin')
 shell.cp('dist/bin/cypress.js', 'build/dist/bin/cypress')
 // because this is a compiled file, it is read only and we need to grant execute permissions
 shell.chmod('+x', 'build/dist/bin/cypress')
-
-// copy the stderr-filtering package to the build directory
-shell.cp('-R', '../packages/stderr-filtering/dist', 'lib/stderr-filtering')
