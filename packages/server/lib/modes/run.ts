@@ -3,7 +3,6 @@ import _ from 'lodash'
 import pkg from '@packages/root'
 import path from 'path'
 import chalk from 'chalk'
-import Debug from 'debug'
 import Bluebird from 'bluebird'
 import assert from 'assert'
 
@@ -29,7 +28,6 @@ import { telemetry } from '@packages/telemetry'
 import { CypressRunResult, createPublicBrowser, createPublicConfig, createPublicRunResults, createPublicSpec, createPublicSpecResults } from './results'
 import { EarlyExitTerminator } from '../util/graceful_crash_handling'
 import type { CypressError } from '@packages/errors'
-import { filter, DEBUG_PREFIX } from '@packages/stderr-filtering'
 import Debug from 'debug'
 
 type SetScreenshotMetadata = (data: TakeScreenshotProps) => void

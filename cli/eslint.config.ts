@@ -32,6 +32,7 @@ export default [
   },
   {
     ignores: [
+      'lib/stderr-filtering/**/*',
       '**/__snapshots__',
       '**/build/**/*',
       'package.json',
