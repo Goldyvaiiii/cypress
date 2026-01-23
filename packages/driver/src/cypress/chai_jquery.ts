@@ -2,7 +2,9 @@ import _ from 'lodash'
 import $dom from '../dom'
 import $elements from '../dom/elements'
 import type { Methods, PartialAssertionArgs } from './assertions/assert'
-import { assert, assertDom, accessors, selectors, wrap } from './assertions/assert'
+import { assert, assertDom, accessors, wrap } from './assertions/assert'
+import { selectors } from './assertions/selectors'
+import { AssertionBuilder } from './assertions/assertion_builder'
 
 const maybeCastNumberToString = (num: number | string) => {
   // if this is a finite number (no Infinity or NaN)
@@ -17,6 +19,8 @@ interface Callbacks {
 
 const $chaiJquery = (chai: Chai.ChaiStatic, chaiUtils: Chai.ChaiUtils, callbacks: Callbacks) => {
   const { inspect, flag } = chaiUtils
+
+  const assertionBuilder = new AssertionBuilder(chai, chaiUtils)
 
   const assertPartial = (
     ctx: Chai.AssertionStatic,
@@ -238,22 +242,9 @@ const $chaiJquery = (chai: Chai.ChaiStatic, chaiUtils: Chai.ChaiUtils, callbacks
     })
   })
 
-  _.each(selectors, (selectorName, selector) => {
-    const sel = selector as keyof typeof selectors
-
-    return chai.Assertion.addProperty(sel, function () {
-      return assert(
-        this,
-        chaiUtils,
-        callbacks,
-        sel,
-        wrap(this).is(`:${sel}`),
-        'expected #{this} to be #{exp}',
-        'expected #{this} not to be #{exp}',
-        selectorName,
-      )
-    })
-  })
+  for (const selector of selectors) {
+    assertionBuilder.add(selector)
+  }
 
   _.each(accessors, (description, accessor) => {
     const acc = accessor as keyof typeof accessors

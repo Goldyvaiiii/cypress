@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import Promise from 'bluebird'
 
 import $dom from '../../dom'
 import $errUtils from '../../cypress/error_utils'
@@ -30,8 +29,13 @@ const onBeforeLog = (log, command, commandLogId) => {
   return true
 }
 
+type ChainerFn = (subject: unknown) => void | Promise<void>
+
+function isFn (value: unknown): value is Function {
+  return _.isFunction(value)
+}
 export default function (Commands, Cypress, cy, state) {
-  const shouldFnWithCallback = function (subject, fn) {
+  const shouldFnWithCallback = async function <Subject> (subject: Subject, fn: ChainerFn) {
     state('current')?.set('followedByShouldCallback', true)
 
     const commandEnqueued = (obj: Cypress.EnqueuedCommandAttributes) => {
@@ -43,24 +47,22 @@ export default function (Commands, Cypress, cy, state) {
       )
     }
 
-    return Promise
-    .try(() => {
+    try {
       const remoteSubject = cy.getRemotejQueryInstance(subject)
 
       Cypress.once('command:enqueued', commandEnqueued)
 
-      return fn.call(this, remoteSubject ? remoteSubject : subject)
-    })
-    .finally(() => {
+      await fn.call(this, remoteSubject ? remoteSubject : subject)
+    } finally {
       Cypress.removeListener('command:enqueued', commandEnqueued)
-    })
-    .tap(() => {
-      state('current')?.set('followedByShouldCallback', false)
-    })
-    .return(subject)
+    }
+
+    state('current')?.set('followedByShouldCallback', false)
+
+    return subject
   }
 
-  const shouldFn = function (subject, chainers, ...args) {
+  const shouldFn = async function <Subject> (subject: Subject, chainers: string | ChainerFn, ...args: unknown[]) {
     const command = cy.state('current')
 
     // Most commands are responsible for creating and managing their own log messages directly.
@@ -84,10 +86,10 @@ export default function (Commands, Cypress, cy, state) {
     // Here, assertionIndex is 0 for both - one .should() block generates two log messages. In this case, logIndex is
     // used to tell them apart, since it increments each time Cypress.log() is called within a single retry of a single
     // .should().
-    const assertionIndex = cy.state('upcomingAssertions') ? cy.state('upcomingAssertions').indexOf(command.get('currentAssertionCommand')) : 0
+    const assertionIndex: number = cy.state('upcomingAssertions') ? cy.state('upcomingAssertions').indexOf(command.get('currentAssertionCommand')) : 0
     let logIndex = 0
 
-    if (_.isFunction(chainers)) {
+    if (isFn(chainers)) {
       cy.state('onBeforeLog', (log) => {
         logIndex++
 
@@ -95,14 +97,16 @@ export default function (Commands, Cypress, cy, state) {
       })
 
       try {
-        return shouldFnWithCallback.apply(this, [subject, chainers])
+        return shouldFnWithCallback.call(this, subject, chainers)
       } finally {
         cy.state('onBeforeLog', undefined)
       }
     }
 
-    let exp = cy.expect(subject).to
-    const originalChainers = chainers
+    // At this point, chainers is a string
+    const chainerString: string = chainers
+
+    let exp: Chai.AssertionStatic = cy.expect(subject).to
 
     const throwAndLogErr = (err) => {
       // since we are throwing our own error
@@ -112,7 +116,7 @@ export default function (Commands, Cypress, cy, state) {
       const log = Cypress.log({
         name: 'should',
         type: 'child',
-        message: ([] as any[]).concat(originalChainers, args),
+        message: ([] as any[]).concat(chainerString, args),
         end: true,
         snapshot: true,
         error: err,
@@ -121,17 +125,17 @@ export default function (Commands, Cypress, cy, state) {
       return $errUtils.throwErr(err, { onFail: log })
     }
 
-    chainers = chainers.split('.')
-    const lastChainer = _.last(chainers)
+    const chainerParts: string[] = chainerString.split('.')
+    const lastChainer = _.last(chainerParts)
 
     // backup the original assertion subject
     const originalObj = exp._obj
     let err
 
-    const isCheckingExistence = reExistence.test(chainers)
-    const isCheckingLengthOrExistence = isCheckingExistence || reHaveLength.test(chainers)
+    const isCheckingExistence = reExistence.test(chainerString)
+    const isCheckingLengthOrExistence = isCheckingExistence || reHaveLength.test(chainerString)
 
-    const applyChainer = function (memo, value) {
+    const applyChainer = async function (memo: Chai.AssertionStatic, value: string): Promise<Chai.AssertionStatic | any> {
       logIndex++
       cy.state('onBeforeLog', (log) => {
         return onBeforeLog(log, command, `${assertionIndex}-${logIndex}`)
@@ -142,11 +146,11 @@ export default function (Commands, Cypress, cy, state) {
           // https://github.com/cypress-io/cypress/issues/16006
           // Referring some commands like 'visible'  triggers assert function in chai_jquery.js
           // It creates duplicated messages and confuses users.
-          const cmd = memo[value]
+          const cmd: unknown = memo[value]
 
-          if (_.isFunction(cmd)) {
+          if (isFn(cmd)) {
             try {
-              return cmd.apply(memo, args)
+              return await cmd.apply(memo, args) as Chai.AssertionStatic
             } catch (err: any) {
               // if we made it all the way to the actual
               // assertion but its set to retry false then
@@ -159,17 +163,17 @@ export default function (Commands, Cypress, cy, state) {
               throw err
             }
           } else {
-            return cmd
+            return await cmd as Chai.AssertionStatic
           }
         } else {
-          return memo[value]
+          return await memo[value] as Chai.AssertionStatic
         }
       } finally {
         cy.state('onBeforeLog', undefined)
       }
     }
 
-    const applyChainers = function () {
+    const applyChainers = async function (): Promise<Chai.AssertionStatic> {
       // if we're not doing existence or length assertions
       // then check to ensure the subject exists
       // in the DOM if its a DOM subject
@@ -180,37 +184,26 @@ export default function (Commands, Cypress, cy, state) {
         Cypress.ensure.isAttached(subject, 'should', cy)
       }
 
-      const newExp = _.reduce(chainers, (memo, value) => {
-        if (!(value in memo)) {
-          err = $errUtils.cypressErrByPath('should.chainer_not_found', { args: { chainer: value } })
+      for (const part of chainerParts) {
+        if (!(part in exp)) {
+          err = $errUtils.cypressErrByPath('should.chainer_not_found', { args: { chainer: part } })
           err.retry = false
           throwAndLogErr(err)
         }
 
-        // https://github.com/cypress-io/cypress/issues/883
-        // A single chainer used that is not an actual assertion, like '.should('be', 'true')'
-        if (chainers.length < 2 && !isCheckingExistence && !_.isFunction(memo[value])) {
-          err = $errUtils.cypressErrByPath('should.language_chainer', { args: { originalChainers } })
-          err.retry = false
-          throwAndLogErr(err)
-        }
-
-        return applyChainer(memo, value)
-      }, exp)
-
-      exp = newExp ? newExp : exp
-    }
-
-    return Promise.try(applyChainers).then(() => {
-      // if the _obj has been mutated then we
-      // are chaining assertion properties and
-      // should return this new subject
-      if (originalObj !== exp._obj) {
-        return exp._obj
+        exp = await applyChainer(exp, part)
       }
 
-      return subject
-    })
+      return exp
+    }
+
+    await applyChainers()
+
+    if (originalObj !== exp._obj) {
+      return exp._obj
+    }
+
+    return subject
   }
 
   Commands.addAll({ type: 'assertion', prevSubject: true }, {
