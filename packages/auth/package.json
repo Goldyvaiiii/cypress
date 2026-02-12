@@ -2,7 +2,13 @@
   "name": "@packages/auth",
   "version": "0.0.0-development",
   "private": true,
-  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rimraf -rf ./{dist,coverage}",
@@ -10,7 +16,15 @@
     "test": "vitest",
     "watch": "tsc --watch"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@packages/root": "0.0.0-development",
+    "debug": "^4.3.4",
+    "express": "4.22.0",
+    "bluebird": "^3.7.2",
+    "node-machine-id": "^1.1.17",
+    "os-utils": "^0.0.16",
+    "lodash": "^4.17.21"
+   },
   "devDependencies": {
     "@packages/eslint-config": "0.0.0-development",
     "@types/node": "^22.18.7",

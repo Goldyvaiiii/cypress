@@ -18,7 +18,7 @@ describe('auth', () => {
   let dependencies: AuthDependencies
   let mockApi: any
   let mockCache: any
-  let mockElectronShell: any
+  let mockElectron: any
   let mockMachineId: any
   let mockUtilities: any
 
@@ -34,8 +34,10 @@ describe('auth', () => {
       removeUser: vi.fn().mockResolvedValue(undefined),
     }
 
-    mockElectronShell = {
-      openExternal: vi.fn().mockResolvedValue(undefined),
+    mockElectron = {
+      shell: {
+        openExternal: vi.fn().mockResolvedValue(undefined),
+      },
     }
 
     mockMachineId = vi.fn().mockResolvedValue(MACHINE_ID)
@@ -58,9 +60,8 @@ describe('auth', () => {
     dependencies = {
       api: mockApi,
       cache: mockCache,
-      electronShell: mockElectronShell,
-      machineId: mockMachineId,
-      utilities: mockUtilities,
+      electron: mockElectron,
+      randomId: mockUtilities.randomId,
     }
 
     auth = createAuth(dependencies)
@@ -127,33 +128,33 @@ describe('auth', () => {
 
   describe('_internal.launchNativeAuth', () => {
     it('handles errors when openExternal fails', async () => {
-      mockElectronShell.openExternal.mockRejectedValue(new TypeError('Cannot open external'))
+      mockElectron.shell.openExternal.mockRejectedValue(new TypeError('Cannot open external'))
 
       const sendWarning = vi.fn()
 
       await auth._internal.launchNativeAuth(REDIRECT_URL, sendWarning)
 
-      expect(mockElectronShell.openExternal).toHaveBeenCalledWith(REDIRECT_URL)
+      expect(mockElectron.shell.openExternal).toHaveBeenCalledWith(REDIRECT_URL)
     })
 
     describe('with shell available', () => {
       it('returns a promise that is fulfilled when openExternal succeeds', async () => {
-        mockElectronShell.openExternal.mockResolvedValue(undefined)
+        mockElectron.shell.openExternal.mockResolvedValue(undefined)
         const sendWarning = vi.fn()
 
         await auth._internal.launchNativeAuth(REDIRECT_URL, sendWarning)
 
-        expect(mockElectronShell.openExternal).toHaveBeenCalledWith(REDIRECT_URL)
+        expect(mockElectron.shell.openExternal).toHaveBeenCalledWith(REDIRECT_URL)
         expect(sendWarning).not.toHaveBeenCalled()
       })
 
       it('is still fulfilled when openExternal fails, but sendWarning is called', async () => {
-        mockElectronShell.openExternal.mockRejectedValue(new Error('Failed to open'))
+        mockElectron.shell.openExternal.mockRejectedValue(new Error('Failed to open'))
         const sendLaunchError = vi.fn()
 
         await auth._internal.launchNativeAuth(REDIRECT_URL, sendLaunchError)
 
-        expect(mockElectronShell.openExternal).toHaveBeenCalledWith(REDIRECT_URL)
+        expect(mockElectron.shell.openExternal).toHaveBeenCalledWith(REDIRECT_URL)
         // Note: sendLaunchError will be called after timeout, but we can't easily test that here
       })
     })

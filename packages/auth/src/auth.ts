@@ -1,7 +1,15 @@
-import type Bluebird from 'bluebird'
+import Bluebird from 'bluebird'
 import type { CachedUser } from '@packages/types'
-import type { AuthDependencies } from './types'
 import { createUser } from './user'
+import type { AuthDependencies } from './types'
+import Debug from 'debug'
+import pkg from '@packages/root'
+import { machineId } from 'node-machine-id'
+import os from 'os'
+import _ from 'lodash'
+import express from 'express'
+
+const debug = Debug('cypress:auth:auth')
 
 /**
  * Internal state for the auth module
@@ -19,11 +27,7 @@ interface AuthState {
  * Create the auth module with dependency injection
  */
 export function createAuth (dependencies: AuthDependencies) {
-  const { api, cache, electronShell, machineId, utilities } = dependencies
-  const { randomId, osPlatform, cypressVersion, lodash, express, debug, url, Promise: PromiseUtil } = utilities
-
-  const debugLogger = debug('cypress:server:cloud:auth')
-
+  const { api, cache, electron, randomId } = dependencies
   // Internal state
   let state: AuthState = {
     app: undefined,
@@ -63,8 +67,8 @@ export function createAuth (dependencies: AuthDependencies) {
       port: port.toString(),
       state: state.authState,
       machineId: id,
-      cypressVersion,
-      platform: osPlatform(),
+      cypressVersion: pkg.version,
+      platform: os.platform(),
       ...(!!(utmMedium && utmSource && utmContent) && {
         utm_source: utmSource,
         utm_medium: utmMedium,
@@ -95,7 +99,7 @@ export function createAuth (dependencies: AuthDependencies) {
       // launch an express server to listen for the auth callback from Cypress Cloud
       const origin = getOriginFromUrl(baseLoginUrl)
 
-      debugLogger('Launching auth server with origin', origin)
+      debug('Launching auth server with origin', origin)
       state.app = express()
 
       state.app.get('/redirect-to-auth', (req: any, res: any) => {
@@ -103,7 +107,7 @@ export function createAuth (dependencies: AuthDependencies) {
 
         buildFullLoginUrl(baseLoginUrl, state.server, utmSource, utmMedium, utmContent)
           .then((fullLoginUrl) => {
-            debugLogger('Received GET to /redirect-to-auth, redirecting: %o', { fullLoginUrl })
+            debug('Received GET to /redirect-to-auth, redirecting: %o', { fullLoginUrl })
 
             res.redirect(303, fullLoginUrl)
 
@@ -112,7 +116,7 @@ export function createAuth (dependencies: AuthDependencies) {
       })
 
       state.app.get('/auth', (req: any, res: any) => {
-        debugLogger('Received GET to /auth with query params %o', req.query)
+        debug('Received GET to /auth with query params %o', req.query)
 
         const redirectToStatus = (status: string) => {
           res.redirect(`${baseLoginUrl}?status=${status}`)
@@ -123,7 +127,7 @@ export function createAuth (dependencies: AuthDependencies) {
          * is bugging out, `authCallback` can be undefined and reaching this point makes no sense.
          * @see https://github.com/cypress-io/cypress/pull/5243
          */
-        if (lodash.get(req.query, 'status') === 'error' || !state.authCallback) {
+        if (_.get(req.query, 'status') === 'error' || !state.authCallback) {
           if (state.authCallback) {
             state.authCallback(new Error('There was an error authenticating to Cypress Cloud.'))
           }
@@ -174,7 +178,7 @@ export function createAuth (dependencies: AuthDependencies) {
   }
 
   const stopServer = (): void => {
-    debugLogger('Closing auth server')
+    debug('Closing auth server')
     if (state.server) {
       state.server.close()
       state.server = undefined
@@ -204,9 +208,9 @@ export function createAuth (dependencies: AuthDependencies) {
     state.openExternalAttempted = true
 
     try {
-      await electronShell.openExternal(loginUrl)
+      await electron.shell.openExternal(loginUrl)
     } catch (err) {
-      debugLogger('Error launching native auth: %o', { err })
+      debug('Error launching native auth: %o', { err })
       warnCouldNotLaunch()
     }
   }
@@ -252,14 +256,14 @@ export function createAuth (dependencies: AuthDependencies) {
         return buildLoginRedirectUrl(state.server!)
       })
       .then((loginRedirectUrl) => {
-        debugLogger('Trying to open native auth to URL %s', loginRedirectUrl)
+        debug('Trying to open native auth to URL %s', loginRedirectUrl)
 
         return launchNativeAuth(loginRedirectUrl, sendMessage).then(() => {
-          debugLogger('successfully opened native auth url')
+          debug('successfully opened native auth url')
         })
       })
       .then(() => {
-        return PromiseUtil.fromCallback<CachedUser>((cb) => {
+        return Bluebird.fromCallback<CachedUser>((cb) => {
           state.authCallback = cb
         })
       })

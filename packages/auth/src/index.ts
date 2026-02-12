@@ -7,8 +7,6 @@ export { createAuth } from './auth'
 export type {
   ApiClient,
   CacheClient,
-  ElectronShell,
-  MachineIdProvider,
-  AuthUtilities,
+  Electron,
   AuthDependencies,
 } from './types'
