@@ -1,63 +1,99 @@
-require('../../spec_helper')
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { createUser } from '../user'
+import type { ApiClient, CacheClient } from '../types'
 
-const api = require('../../../lib/cloud/api').default
-const cache = require('../../../lib/cache').cache
-const user = require('../../../lib/cloud/user')
+describe('user', () => {
+  let mockApi: ApiClient
+  let mockCache: CacheClient
+  let user: ReturnType<typeof createUser>
 
-describe('lib/cloud/user', () => {
-  context('.get', () => {
-    it('calls cache.getUser', () => {
-      sinon.stub(cache, 'getUser').resolves({ name: 'brian' })
+  beforeEach(() => {
+    mockApi = {
+      getAuthUrls: vi.fn(),
+      postLogout: vi.fn(),
+    }
 
-      return user.get().then((user) => {
-        expect(user).to.deep.eq({ name: 'brian' })
-      })
+    mockCache = {
+      getUser: vi.fn(),
+      setUser: vi.fn(),
+      removeUser: vi.fn(),
+    }
+
+    user = createUser({ api: mockApi, cache: mockCache })
+  })
+
+  describe('.get', () => {
+    it('calls cache.getUser', async () => {
+      const mockUser = { name: 'brian', email: 'brian@test.com', authToken: 'token' }
+
+      ;(mockCache.getUser as any).mockResolvedValue(mockUser)
+
+      const result = await user.get()
+
+      expect(result).toEqual(mockUser)
+      expect(mockCache.getUser).toHaveBeenCalledTimes(1)
     })
   })
 
-  context('.logOut', () => {
-    it('calls api.postLogout + removes the session from cache', () => {
-      sinon.stub(api, 'postLogout').withArgs('abc-123').resolves()
-      sinon.stub(cache, 'getUser').resolves({ name: 'brian', authToken: 'abc-123' })
-      sinon.spy(cache, 'removeUser')
+  describe('.logOut', () => {
+    it('calls api.postLogout + removes the session from cache', async () => {
+      ;(mockApi.postLogout as any).mockResolvedValue(undefined)
 
-      return user.logOut().then(() => {
-        expect(cache.removeUser).to.be.calledOnce
-      })
+      ;(mockCache.getUser as any).mockResolvedValue({ name: 'brian', authToken: 'abc-123' })
+
+      ;(mockCache.removeUser as any).mockResolvedValue(undefined)
+
+      await user.logOut()
+
+      expect(mockCache.removeUser).toHaveBeenCalledTimes(1)
+      expect(mockApi.postLogout).toHaveBeenCalledWith('abc-123')
     })
 
-    it('does not send to api.postLogout without a authToken', () => {
-      sinon.spy(api, 'postLogout')
-      sinon.stub(cache, 'getUser').resolves({ name: 'brian' })
-      sinon.spy(cache, 'removeUser')
+    it('does not send to api.postLogout without a authToken', async () => {
+      ;(mockCache.getUser as any).mockResolvedValue({ name: 'brian' })
 
-      return user.logOut().then(() => {
-        expect(api.postLogout).not.to.be.called
+      ;(mockCache.removeUser as any).mockResolvedValue(undefined)
 
-        expect(cache.removeUser).to.be.calledOnce
-      })
+      await user.logOut()
+
+      expect(mockApi.postLogout).not.toHaveBeenCalled()
+      expect(mockCache.removeUser).toHaveBeenCalledTimes(1)
     })
 
-    it('removes the session from cache even if api.postLogout rejects', () => {
-      sinon.stub(api, 'postLogout').withArgs('abc-123').rejects(new Error('ECONNREFUSED'))
-      sinon.stub(cache, 'getUser').resolves({ name: 'brian', authToken: 'abc-123' })
-      sinon.spy(cache, 'removeUser')
+    it('removes the session from cache even if api.postLogout rejects', async () => {
+      ;(mockApi.postLogout as any).mockRejectedValue(new Error('ECONNREFUSED'))
 
-      return user.logOut().catch(() => {
-        expect(cache.removeUser).to.be.calledOnce
-      })
+      ;(mockCache.getUser as any).mockResolvedValue({ name: 'brian', authToken: 'abc-123' })
+
+      ;(mockCache.removeUser as any).mockResolvedValue(undefined)
+
+      await expect(user.logOut()).rejects.toThrow('ECONNREFUSED')
+
+      expect(mockCache.removeUser).toHaveBeenCalledTimes(1)
     })
   })
 
-  context('.getBaseLoginUrl', () => {
-    it('calls api.getAuthUrls', () => {
-      sinon.stub(api, 'getAuthUrls').resolves({
-        'dashboardAuthUrl': 'https://github.com/login',
-      })
+  describe('.getBaseLoginUrl', () => {
+    it('calls api.getAuthUrls and returns dashboardAuthUrl from Map', async () => {
+      const authUrls = new Map([['dashboardAuthUrl', 'https://github.com/login']])
 
-      return user.getBaseLoginUrl().then((url) => {
-        expect(url).to.eq('https://github.com/login')
-      })
+      ;(mockApi.getAuthUrls as any).mockResolvedValue(authUrls)
+
+      const url = await user.getBaseLoginUrl()
+
+      expect(url).toBe('https://github.com/login')
+      expect(mockApi.getAuthUrls).toHaveBeenCalledTimes(1)
+    })
+
+    it('calls api.getAuthUrls and returns dashboardAuthUrl from plain object', async () => {
+      const authUrls = { dashboardAuthUrl: 'https://github.com/login' }
+
+      ;(mockApi.getAuthUrls as any).mockResolvedValue(authUrls)
+
+      const url = await user.getBaseLoginUrl()
+
+      expect(url).toBe('https://github.com/login')
+      expect(mockApi.getAuthUrls).toHaveBeenCalledTimes(1)
     })
   })
 })

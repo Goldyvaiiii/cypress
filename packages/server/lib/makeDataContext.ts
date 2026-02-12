@@ -16,8 +16,8 @@ import type {
 } from '@packages/types'
 
 import browserUtils from './browsers/utils'
-import auth from './cloud/auth'
-import user from './cloud/user'
+import { createAuth } from '@packages/auth'
+import api from './cloud/api'
 import * as cohorts from './cohorts'
 import { openProject } from './open_project'
 import { cache } from './cache'
@@ -29,6 +29,15 @@ import appData from './util/app_data'
 import browsers from './browsers'
 import devServer from './plugins/dev-server'
 import { remoteSchemaWrapped } from '@packages/data-context/graphql'
+import { machineId } from 'node-machine-id'
+import _ from 'lodash'
+import express from 'express'
+import os from 'os'
+import pkg from '@packages/root'
+import Promise from 'bluebird'
+import url from 'url'
+import debugModule from 'debug'
+import { id as randomId } from './util/random'
 
 const { getBrowsers, ensureAndGetByNameOrPath } = browserUtils
 
@@ -40,6 +49,36 @@ interface MakeDataContextOptions {
 export { getCtx, setCtx, clearCtx }
 
 export function makeDataContext (options: MakeDataContextOptions): DataContext {
+  // Create auth instance with dependency injection
+  const auth = createAuth({
+    api,
+    cache,
+    electronShell: {
+      openExternal: (url: string) => electron.shell.openExternal(url),
+    },
+    machineId,
+    utilities: {
+      randomId,
+      osPlatform: () => os.platform(),
+      cypressVersion: pkg.version,
+      lodash: {
+        pick: _.pick,
+        get: _.get,
+      },
+      express: () => express(),
+      debug: (namespace: string) => debugModule(namespace),
+      url: {
+        parse: url.parse,
+        format: url.format,
+      },
+      Promise: {
+        fromCallback: Promise.fromCallback.bind(Promise),
+        method: Promise.method.bind(Promise),
+        resolve: Promise.resolve.bind(Promise),
+      },
+    },
+  })
+
   const ctx = new DataContext({
     schema: graphqlSchema,
     schemaCloud: remoteSchemaWrapped,
@@ -64,13 +103,13 @@ export function makeDataContext (options: MakeDataContextOptions): DataContext {
     },
     authApi: {
       getUser () {
-        return user.get()
+        return auth.getUser()
       },
       logIn (onMessage, utmSource, utmMedium, utmContent) {
         return auth.start(onMessage, utmSource, utmMedium, utmContent)
       },
       logOut () {
-        return user.logOut()
+        return auth.logOut()
       },
       resetAuthState () {
         auth.stopServer()

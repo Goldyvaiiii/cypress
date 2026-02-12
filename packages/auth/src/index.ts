@@ -2,9 +2,13 @@
  * Authentication utilities and functionality
  */
 
-/**
- * Placeholder export to establish package structure
- */
-export const auth = () => {
-  // TODO: Implement authentication functionality
-}
+export { createAuth } from './auth'
+
+export type {
+  ApiClient,
+  CacheClient,
+  ElectronShell,
+  MachineIdProvider,
+  AuthUtilities,
+  AuthDependencies,
+} from './types'
