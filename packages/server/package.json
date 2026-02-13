@@ -30,6 +30,7 @@
     "@cypress/webpack-preprocessor": "0.0.0-development",
     "@ffmpeg-installer/ffmpeg": "1.1.0",
     "@ffprobe-installer/ffprobe": "2.1.2",
+    "@packages/auth": "0.0.0-development",
     "@packages/icons": "0.0.0-development",
     "@packages/stderr-filtering": "0.0.0-development",
     "@packages/telemetry": "0.0.0-development",

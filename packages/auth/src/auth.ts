@@ -237,7 +237,7 @@ export function createAuth (dependencies: AuthDependencies) {
     utmSource?: string,
     utmMedium?: string,
     utmContent?: string,
-  ): Bluebird<CachedUser> => {
+  ): Bluebird<void | CachedUser> => {
     function sendMessage (name: string, message?: string) {
       onMessage({
         name,
@@ -269,7 +269,6 @@ export function createAuth (dependencies: AuthDependencies) {
       })
       .catch((err: Error) => {
         sendMessage('AUTH_ERROR_DURING_LOGIN', err.message)
-        throw err
       })
       .finally(() => {
         stopServer()
