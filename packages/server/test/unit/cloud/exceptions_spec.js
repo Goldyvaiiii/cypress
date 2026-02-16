@@ -1,7 +1,8 @@
 delete global.fs
-
+const { sinon } = require('../../spec_helper')
 const api = require('../../../lib/cloud/api').default
-const user = require('../../../lib/cloud/user')
+const auth = require('@packages/auth')
+const cache = require('../../../lib/cache').cache
 const exception = require('../../../lib/cloud/exception')
 const system = require('../../../lib/util/system')
 const pkg = require('@packages/root')
@@ -9,7 +10,7 @@ const pkg = require('@packages/root')
 describe('lib/cloud/exceptions', () => {
   context('.getAuthToken', () => {
     it('returns authToken from cache', () => {
-      sinon.stub(user, 'get').resolves({ authToken: 'auth-token-123' })
+      sinon.stub(cache, 'getUser').resolves({ authToken: 'auth-token-123' })
 
       return exception.getAuthToken().then((authToken) => {
         expect(authToken).to.eq('auth-token-123')
@@ -17,7 +18,7 @@ describe('lib/cloud/exceptions', () => {
     })
 
     it('returns undefined if no authToken', () => {
-      sinon.stub(user, 'get').resolves({})
+      sinon.stub(cache, 'getUser').resolves({})
 
       return exception.getAuthToken().then((authToken) => {
         expect(authToken).to.be.undefined
