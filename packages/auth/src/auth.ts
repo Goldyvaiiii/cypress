@@ -1,7 +1,8 @@
 import Bluebird from 'bluebird'
 import type { CachedUser } from '@packages/types'
 import { createUser } from './user'
-import type { AuthDependencies } from './types'
+import type { CacheClient, ApiClient } from './user'
+
 import Debug from 'debug'
 import pkg from '@packages/root'
 import { machineId } from 'node-machine-id'
@@ -27,15 +28,41 @@ export interface LogInStateChanged {
   (message: { name: string, message?: string, browserOpened: boolean }): void
 }
 
+interface Electron {
+  shell: {
+    openExternal: (url: string) => Promise<void>
+  }
+}
+
+export interface AuthDependencies {
+  api: ApiClient
+  cache: CacheClient
+  electron: Electron
+  randomId: (length?: number) => string
+}
+
+type Auth = {
+  start: (onMessage: LogInStateChanged, utmSource: string, utmMedium?: string, utmContent?: string) => Bluebird<void | CachedUser>
+  stopServer: () => void
+  getUser: () => Bluebird<CachedUser>
+  logOut: () => Bluebird<void>
+  _internal: {
+    buildLoginRedirectUrl: (server: any) => string
+    buildFullLoginUrl: (baseLoginUrl: string, server: any, utmSource?: string, utmMedium?: string, utmContent?: string) => Promise<string>
+    getOriginFromUrl: (originalUrl: string) => string
+    launchServer: (baseLoginUrl: string, sendMessage: (name: string, message?: string) => void, utmSource?: string, utmMedium?: string, utmContent?: string) => Promise<void>
+    stopServer: () => void
+    launchNativeAuth: (loginUrl: string, sendMessage: (name: string, message?: string) => void) => Promise<void>
+  }
+}
+
 /**
  * Create the auth module with dependency injection
  */
-export function createAuth (dependencies: AuthDependencies) {
-  const { api, cache, electron, randomId } = dependencies
-
+export function createAuth ({ api, cache, electron, randomId }: AuthDependencies): Auth {
   debug('creating auth for data context')
   // Internal state
-  let state: AuthState = {
+  const state: AuthState = {
     app: undefined,
     server: undefined,
     authState: null,

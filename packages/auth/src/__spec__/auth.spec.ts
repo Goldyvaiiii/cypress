@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach, Mocked } from 'vitest'
-import { createAuth } from '../auth'
-import type { AuthDependencies } from '../types'
+import { createAuth, type AuthDependencies } from '../auth'
 import pkg from '@packages/root'
 import express from 'express'
 import os from 'os'

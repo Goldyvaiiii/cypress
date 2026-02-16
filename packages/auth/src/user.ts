@@ -1,11 +1,22 @@
 import type { CachedUser } from '@packages/types'
 import type Bluebird from 'bluebird'
-import type { ApiClient, CacheClient } from './types'
 
 /**
  * User module for authentication user operations
  * Uses dependency injection for API and cache access
  */
+
+export interface CacheClient {
+  getUser(): Bluebird<CachedUser>
+  setUser(user: CachedUser): Bluebird<void>
+  removeUser(): Bluebird<void>
+}
+
+export interface ApiClient {
+  getAuthUrls(): Bluebird<Map<string, string>>
+  postLogout(authToken: string): Bluebird<void>
+}
+
 export function createUser (dependencies: { api: ApiClient, cache: CacheClient }) {
   const { api, cache } = dependencies
 
