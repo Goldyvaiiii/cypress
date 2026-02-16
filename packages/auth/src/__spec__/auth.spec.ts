@@ -36,7 +36,7 @@ vi.mock('bluebird', async () => {
   return {
     ...actual,
     default: {
-      ...actual.default,
+      ...(actual.default as object),
       fromCallback: vi.fn(),
     },
   }
@@ -87,7 +87,7 @@ describe('auth', () => {
 
     mockExpressApp = {
       get: vi.fn(),
-      listen: vi.fn().mockImplementation((port?: number, host?: string, cb: (err?: Error) => void) => {
+      listen: vi.fn().mockImplementation((port: number, host: string, cb: (err?: Error) => void) => {
         setTimeout(async () => {
           await cb()
           resolveServerListen()

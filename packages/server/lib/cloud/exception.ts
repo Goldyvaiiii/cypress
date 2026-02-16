@@ -2,7 +2,7 @@ import _ from 'lodash'
 import Bluebird from 'bluebird'
 import pkg from '@packages/root'
 import api from './api'
-import user from './user'
+import { cache } from '../cache'
 import * as system from '../util/system'
 import { stripPath } from './strip_path'
 
@@ -59,7 +59,7 @@ export = {
   },
 
   async getAuthToken () {
-    return user.get().then((user) => {
+    return cache.getUser().then((user) => {
       return user && user.authToken
     })
   },

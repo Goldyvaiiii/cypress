@@ -23,11 +23,17 @@ interface AuthState {
   authRedirectReached: boolean
 }
 
+export interface LogInStateChanged {
+  (message: { name: string, message?: string, browserOpened: boolean }): void
+}
+
 /**
  * Create the auth module with dependency injection
  */
 export function createAuth (dependencies: AuthDependencies) {
   const { api, cache, electron, randomId } = dependencies
+
+  debug('creating auth for data context')
   // Internal state
   let state: AuthState = {
     app: undefined,
@@ -234,9 +240,9 @@ export function createAuth (dependencies: AuthDependencies) {
    */
   const start = (
     onMessage: (message: { name: string, message?: string, browserOpened: boolean }) => void,
-    utmSource?: string,
-    utmMedium?: string,
-    utmContent?: string,
+    utmSource: string | undefined,
+    utmMedium: string | undefined,
+    utmContent: string | undefined,
   ): Bluebird<void | CachedUser> => {
     function sendMessage (name: string, message?: string) {
       onMessage({

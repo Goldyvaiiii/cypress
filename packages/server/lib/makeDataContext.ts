@@ -16,7 +16,7 @@ import type {
 } from '@packages/types'
 
 import browserUtils from './browsers/utils'
-import { createAuth } from '@packages/auth'
+import { createAuth, createUser } from '@packages/auth'
 import api from './cloud/api'
 import * as cohorts from './cohorts'
 import { openProject } from './open_project'
@@ -30,7 +30,7 @@ import browsers from './browsers'
 import devServer from './plugins/dev-server'
 import { remoteSchemaWrapped } from '@packages/data-context/graphql'
 import _ from 'lodash'
-
+import { id as randomId } from './util/random'
 const { getBrowsers, ensureAndGetByNameOrPath } = browserUtils
 
 interface MakeDataContextOptions {
@@ -41,6 +41,14 @@ interface MakeDataContextOptions {
 export { getCtx, setCtx, clearCtx }
 
 export function makeDataContext (options: MakeDataContextOptions): DataContext {
+  const auth = createAuth({
+    api,
+    cache,
+    electron,
+    randomId,
+  })
+  const user = createUser({ api, cache })
+
   const ctx = new DataContext({
     schema: graphqlSchema,
     schemaCloud: remoteSchemaWrapped,
@@ -63,11 +71,20 @@ export function makeDataContext (options: MakeDataContextOptions): DataContext {
     appApi: {
       appData,
     },
-    authApi: createAuth({
-      api,
-      cache,
-      electron,
-    }),
+    authApi: {
+      getUser () {
+        return user.get()
+      },
+      logIn (onMessage: any, utmSource: string, utmMedium: string, utmContent: string | null) {
+        return auth.start(onMessage, utmSource, utmMedium, utmContent) as Promise<any>
+      },
+      logOut () {
+        return user.logOut()
+      },
+      resetAuthState () {
+        return auth.resetAuthState()
+      },
+    },
     projectApi: {
       async launchProject (browser: FoundBrowser, spec: Cypress.Spec, options: OpenProjectLaunchOpts) {
         await openProject.launch({ ...browser }, spec, options)

@@ -3,11 +3,7 @@
   "version": "0.0.0-development",
   "private": true,
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+    ".": "./dist/index.js"
   },
   "scripts": {
     "build": "yarn clean && tsc",

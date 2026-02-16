@@ -2,7 +2,9 @@
  * Authentication utilities and functionality
  */
 
-export { createAuth } from './auth'
+export { createAuth, type LogInStateChanged } from './auth'
+
+export { createUser } from './user'
 
 export type {
   ApiClient,
